@@ -22,23 +22,22 @@ class TransactionStatusCommand extends Command
 
 //    private Tanda $tanda;
 //
-//    /**
-//     * Create a new command instance.
-//     *
-//     * @param Tanda $repository
-//     */
-//    public function __construct(Tanda $repository)
-//    {
-//        parent::__construct();
+    /**
+     * Create a new command instance.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
 //        $this->tanda = $repository;
-//    }
-//
-//    /**
-//     * Execute the console command.
-//     *
-//     */
-//    public function handle()
-//    {
+    }
+
+    /**
+     * Execute the console command.
+     *
+     */
+    public function handle()
+    {
 //        $results = $this->tanda->queryTransactionStatus();
 //
 //        if (count($results['successful'])) {
@@ -60,5 +59,5 @@ class TransactionStatusCommand extends Command
 //        if (empty($results['successful']) && empty($results['errors'])) {
 //            $this->comment("Nothing to query... all transactions seem to be ok.");
 //        }
-//    }
+    }
 }

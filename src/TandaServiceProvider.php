@@ -3,6 +3,7 @@
 namespace DrH\Tanda;
 
 use DrH\Tanda\Library\BaseClient;
+use DrH\Tanda\Library\Utility;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
@@ -62,13 +63,13 @@ class TandaServiceProvider extends ServiceProvider
                 return $this->app->make(Utility::class);
             }
         );
-
-        $this->app->singleton(
-            Facades\Notification::class,
-            function ($app) {
-                return $this->app->make(Notification::class);
-            }
-        );
+//
+//        $this->app->singleton(
+//            Facades\Notification::class,
+//            function ($app) {
+//                return $this->app->make(Notification::class);
+//            }
+//        );
     }
 
     /**
@@ -95,5 +96,4 @@ class TandaServiceProvider extends ServiceProvider
             ]);
         }
     }
-
 }

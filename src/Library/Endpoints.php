@@ -6,7 +6,7 @@ use DrH\Tanda\Exceptions\TandaException;
 
 class Endpoints
 {
-    const AUTH = '/accounts/v1/oauth/token';
+    public const AUTH = '/accounts/v1/oauth/token';
 
     private static function getEndpoint(string $section): string
     {

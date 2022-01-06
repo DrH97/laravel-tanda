@@ -2,21 +2,23 @@
 
 namespace DrH\Tanda\Tests\Unit;
 
+use DrH\Tanda\Library\Providers;
+use DrH\Tanda\Models\TandaRequest;
 use DrH\Tanda\Tests\MockServerTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TransactionStatusCommandTest extends MockServerTestCase
-{
+//class TransactionStatusCommandTest extends MockServerTestCase
+//{
 
-    use RefreshDatabase;
+//    use RefreshDatabase;
 
-    /** @test */
-    function the_command_returns_nothing_text_when_no_unresolved_requests()
-    {
-        $this->artisan('tanda:query_status')
-            ->expectsOutput('Nothing to query... all transactions seem to be ok.')
-            ->assertExitCode(0);
-    }
+//    /** @test */
+//    function the_command_returns_nothing_text_when_no_unresolved_requests()
+//    {
+//        $this->artisan('tanda:query_status')
+//            ->expectsOutput('Nothing to query... all transactions seem to be ok.')
+//            ->assertExitCode(0);
+//    }
 
 //    TODO: Would require us to inject a modded Kyanda repo to runtime
 //    /** @test */
@@ -49,8 +51,8 @@ class TransactionStatusCommandTest extends MockServerTestCase
 //            'message' => 'Your request has been posted successfully!'
 //        ]);
 //
-//        $this->artisan('kyanda:query_status')
+//        $this->artisan('tanda:query_status')
 //            ->expectsOutput('Failed queries: ')
 //            ->assertExitCode(0);
 //    }
-}
+//}

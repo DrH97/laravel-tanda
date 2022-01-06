@@ -28,7 +28,6 @@ class Authenticator
         $this->client = $baseClient;
         $this->endpoint = Endpoints::build(Endpoints::AUTH);
         self::$instance = $this;
-
     }
 
 
@@ -117,5 +116,4 @@ class Authenticator
 //        Use the returned expiry time with 10 seconds leeway for latency etc...
         Cache::put($this->credentials, $credentials->access_token, $credentials->expires_in - 10);
     }
-
 }

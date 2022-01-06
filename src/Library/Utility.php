@@ -127,6 +127,5 @@ class Utility extends Core
         if ($amount < $min || $amount > $max) {
             throw new TandaException("Amount needs to be between $min and $max.");
         }
-
     }
 }

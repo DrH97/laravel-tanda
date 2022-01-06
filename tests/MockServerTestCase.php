@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Config;
 
 abstract class MockServerTestCase extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
     protected BaseClient $_client;
 
