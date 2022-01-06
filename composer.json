@@ -1,0 +1,64 @@
+{
+    "name": "drh/laravel-tanda",
+    "type": "library",
+    "keywords": [
+        "Library",
+        "Tanda",
+        "Payments",
+        "Bank",
+        "Mobile Money",
+        "Utility Payments",
+        "Payment Collections"
+    ],
+    "description": "Tanda API Library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "illuminate/support": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.23",
+        "phpstan/phpstan": "^0.12.99",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "DrH\\Tanda\\": "src",
+            "DrH\\Tanda\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DrH\\Tanda\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --testdox",
+        "test-coverage": "phpunit --coverage-clover coverage.xml",
+        "test-coverage-html": "phpunit --coverage-html coverage",
+        "check-style": "phpcs -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src",
+        "fix-style": "phpcbf -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src",
+        "run-csa": "phpstan analyse src --level=4 --no-progress",
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DrH\\Tanda\\TandaServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "authors": [
+        {
+            "name": "drh",
+            "email": "jmnabangi@gmail.com"
+        }
+    ],
+    "prefer-stable": true
+}

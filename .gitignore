@@ -1,0 +1,7 @@
+/vendor
+/.idea
+/.run
+composer.lock
+.phpunit.result.cache
+/coverage
+coverage.*
