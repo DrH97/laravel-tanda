@@ -133,7 +133,6 @@ class Utility extends Core
         return $response;
     }
 
-
     private function setCommand(string $provider)
     {
         $this->command = match ($provider) {
@@ -143,6 +142,7 @@ class Utility extends Core
             Providers::FAIBA => Commands::FAIBA_COMMAND,
         };
     }
+
     /**
      * @throws TandaException
      */

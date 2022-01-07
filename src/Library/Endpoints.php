@@ -9,6 +9,7 @@ class Endpoints
     public const AUTH = '/accounts/v1/oauth/token';
     public const REQUEST = '/io/v1/organizations/:organizationId/requests';
     public const STATUS = '/io/v1/organizations/:organizationId/requests/:organizationId';
+    public const BALANCE = '/wallets/v1/orgs/:organizationId/balances';
 
     /**
      * @throws TandaException
