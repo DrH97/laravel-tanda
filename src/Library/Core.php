@@ -36,7 +36,10 @@ class Core
         try {
             $response = $this->sendRequest($method, $endpoint, $body);
             $_body = json_decode($response->getBody());
-
+            if (!str_starts_with($response->getStatusCode(), "2")) {
+                throw new TandaException($_body->errorMessage ?
+                    $_body->errorCode . ' - ' . $_body->errorMessage : $response->getBody());
+            }
             return (array)$_body;
         } catch (ClientException | ServerException $exception) {
             throw new TandaException($exception->getResponse()->getBody());

@@ -46,7 +46,7 @@ class CoreTest extends MockServerTestCase
             new Response(200, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
-            new Response(500, ['Content_type' => 'application/json'],
+            new Response(400, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['request_unsuccessful'])));
 
         $this->expectException(TandaException::class);

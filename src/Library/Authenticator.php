@@ -86,16 +86,16 @@ class Authenticator
     private function makeRequest(): ResponseInterface
     {
         $clientId = config('tanda.client_id', false);
-        $clientSecret = config('tanda.client_id', false);
+        $clientSecret = config('tanda.client_secret', false);
 
         return $this->client->clientInterface->request(
             'POST',
             $this->endpoint,
             [
                 'headers' => [
-                    'Content-Type' => 'application/json',
+                    'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
-                'json' => [
+                'form_params' => [
                     'grant_type' => 'client_credentials',
                     'client_id' => $clientId,
                     'client_secret' => $clientSecret,
