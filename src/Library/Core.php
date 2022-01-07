@@ -54,7 +54,7 @@ class Core
         $body += [
             'referenceParameters' => $this->getReferenceParameters()
         ];
-
+        
         return $this->baseClient->clientInterface->request(
             $method,
             $endpoint,
