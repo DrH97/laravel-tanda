@@ -55,7 +55,6 @@ class Utility extends Core
         ];
         
         $response = $this->request(Endpoints::REQUEST, $body);
-        dd($response);
 
         if ($save) {
             return (array)$this->saveRequest($response, $relationId);

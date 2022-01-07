@@ -52,13 +52,12 @@ class Authenticator
                 $this->saveCredentials($body);
                 return $body->access_token;
             }
-            dd($response);
+
             throw new TandaException($response->getReasonPhrase());
         } catch (RequestException $exception) {
             $message = $exception->getResponse() ?
                 $exception->getResponse()->getReasonPhrase() :
                 $exception->getMessage();
-            dd($exception);
 
             throw new TandaException($message);
         }

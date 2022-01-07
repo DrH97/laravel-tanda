@@ -35,8 +35,12 @@ class Core
 
         try {
             $response = $this->sendRequest($method, $endpoint, $body);
-            $_body = json_decode($response->getBody());
 
+            if (!Str::startsWith($response->getStatusCode(), 2)) {
+                throw new TandaException($response->getReasonPhrase());
+            }
+
+            $_body = json_decode($response->getBody());
             return (array)$_body;
         } catch (ClientException | ServerException $exception) {
             throw new TandaException($exception->getResponse()->getBody());
@@ -54,7 +58,7 @@ class Core
         $body += [
             'referenceParameters' => $this->getReferenceParameters()
         ];
-        
+
         return $this->baseClient->clientInterface->request(
             $method,
             $endpoint,
