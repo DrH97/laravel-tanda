@@ -28,12 +28,13 @@ class Core
     /**
      * @throws TandaException|GuzzleException
      */
-    public function request(string $endpoint, array $body): array
+    public function request(string $endpointSuffix, array $body): array
     {
-        $endpoint = Endpoints::build($endpoint);
+        $endpoint = Endpoints::build($endpointSuffix);
+        $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
         try {
-            $response = $this->sendRequest($endpoint, $body);
+            $response = $this->sendRequest($method, $endpoint, $body);
             $_body = json_decode($response->getBody());
 
             return (array)$_body;
@@ -45,7 +46,7 @@ class Core
     /**
      * @throws TandaException|GuzzleException
      */
-    public function sendRequest(string $endpoint, array $body): ResponseInterface
+    public function sendRequest(string $method, string $endpoint, array $body): ResponseInterface
     {
         $this->bearer = $this->baseClient->authenticator->authenticate();
 
@@ -55,7 +56,7 @@ class Core
         ];
 
         return $this->baseClient->clientInterface->request(
-            'POST',
+            $method,
             $endpoint,
             [
                 'headers' => [
@@ -128,25 +129,22 @@ class Core
             }
         };
 
-        $replace('2547', '07');
-        $replace('7', '07');
-        $replace('2541', '01');
-        $replace('1', '01');
+        $replace('7', '2547');
+        $replace('1', '2541');
 
         if ($strip_plus) {
-            $replace('+254', '0');
+            $replace('+254', '254');
         }
 
+        if (!Str::startsWith($number, "254")) {
         dd($number);
 
         if (!Str::startsWith($number, "0")) {
             //  Means the number started with correct digits but after replacing,
             //  found invalid digit e.g. 254256000000
-            //  2547 isn't found and so 0 does not replace it, which means false number
+            //  254 isn't found and so 254 does not replace it, which means false number
             throw new TandaException("Number does not seem to be a valid phone");
         }
-
-        dd($number);
 
         return $number;
     }
