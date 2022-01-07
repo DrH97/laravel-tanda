@@ -27,7 +27,7 @@ class Controller extends BaseController
     public function airtimePurchase(Request $request): TandaRequest {
         $this->validateRequest([
             'phone' => 'required|integer|digits_between:9,12',
-            'amount' => ['required|integer']
+            'amount' => 'required|integer'
         ], $request, [
             'phone.required' => 'Phone number is required.',
             'phone.integer' => 'Invalid phone number. Must not start with zero.',
