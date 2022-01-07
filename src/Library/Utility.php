@@ -54,6 +54,8 @@ class Utility extends Core
             'requestParameters' => $requestParameters
         ];
 
+        dd($body);
+
         $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {

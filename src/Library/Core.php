@@ -137,12 +137,16 @@ class Core
             $replace('+254', '0');
         }
 
+        dd($number);
+
         if (!Str::startsWith($number, "0")) {
             //  Means the number started with correct digits but after replacing,
             //  found invalid digit e.g. 254256000000
             //  2547 isn't found and so 0 does not replace it, which means false number
             throw new TandaException("Number does not seem to be a valid phone");
         }
+
+        dd($number);
 
         return $number;
     }
