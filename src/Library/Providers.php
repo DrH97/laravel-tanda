@@ -9,7 +9,8 @@ class Providers
     public const TELKOM = "TELKOM";
     public const FAIBA = "FAIBA";
 
-    public const KPLC = "KPLC";
+    public const KPLC_PREPAID = "KPLC_PREPAID";
+    public const KPLC_POSTPAID = "KPLC_POSTPAID";
     public const NAIROBI_WTR = "NAIROBI_WTR";
 
     public const GOTV = "GOTV";

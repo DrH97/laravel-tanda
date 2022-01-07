@@ -16,6 +16,8 @@ class Utility extends Core
 
     private string $phone;
 
+    private string $command;
+
     /**
      * @param int $phone
      * @param int $amount
@@ -32,15 +34,27 @@ class Utility extends Core
         $this->provider = $this->getTelcoFromPhone($phone);
         $this->phone = $this->formatPhoneNumber($phone);
         $this->amount = $amount;
+        $this->setCommand($this->provider);
 
+        $requestParameters = [
+            [
+                "id" => "accountNumber",
+                "value" => $this->phone,
+                "label" => "Customer's phone number"
+            ],
+            [
+                "id" => "amount",
+                "value" => $this->amount,
+                "label" => "Amount"
+            ]
+        ];
         $body = [
-            'amount' => $amount,
-            'phone' => $this->phone,
-            'telco' => $this->provider,
-            'initiatorPhone' => $phone,
+            'commandId' => $this->command,
+            'serviceProviderId' => $this->provider,
+            'requestParameters' => $requestParameters
         ];
 
-        $response = $this->request('airtime', $body);
+        $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {
             return (array)$this->saveRequest($response, $relationId);
@@ -49,6 +63,85 @@ class Utility extends Core
         return $response;
     }
 
+
+    /**
+     * @param int $accountNo
+     * @param int $amount
+     * @param string $provider
+     * @param int $phone
+     * @param int|null $relationId
+     * @param bool $save
+     * @return array|TandaRequest
+     * @throws GuzzleException
+     * @throws TandaException
+     */
+    public function billPayment(
+        int $accountNo,
+        int $amount,
+        string $provider,
+        int $phone,
+        int $relationId = null,
+        bool $save = true
+    ): array {
+        $allowedProviders = [
+            Providers::KPLC_PREPAID,
+            Providers::KPLC_POSTPAID,
+            Providers::GOTV,
+            Providers::DSTV,
+            Providers::ZUKU,
+            Providers::STARTIMES,
+            Providers::NAIROBI_WTR
+        ];
+
+        $this->validate($provider, $amount);
+
+        if (!in_array(strtoupper($provider), $allowedProviders)) {
+            throw new TandaException("Provider does not seem to be valid or supported");
+        }
+
+        $this->provider = $provider;
+
+        $this->setCommand($this->provider);
+
+//        TODO: Check whether customerContact is necessary or what it is used for. $phone = $this->formatPhoneNumber($phone);
+        $requestParameters = [
+            [
+                "id" => "accountNumber",
+                "value" => $accountNo,
+                "label" => "A/c"
+            ],
+            [
+                "id" => "amount",
+                "value" => $this->amount,
+                "label" => "Amount"
+            ]
+        ];
+
+        $body = [
+            'commandId' => $this->command,
+            'serviceProviderId' => $this->provider,
+            'requestParameters' => $requestParameters
+        ];
+
+        $response = $this->request(Endpoints::REQUEST, $body);
+
+        if ($save) {
+            return (array)$this->saveRequest($response, $relationId);
+        }
+
+        return $response;
+    }
+
+
+    private function setCommand(string $provider)
+    {
+        $this->command = match ($provider) {
+            Providers::SAFARICOM, Providers::AIRTEL, Providers::TELKOM => Commands::AIRTIME_COMMAND,
+            Providers::KPLC_POSTPAID, Providers::NAIROBI_WTR => Commands::POSTPAID_BILL_COMMAND,
+            Providers::KPLC_PREPAID => Commands::KPLC_PREPAID_COMMAND,
+            Providers::FAIBA => Commands::FAIBA_COMMAND,
+        };
+    }
     /**
      * @throws TandaException
      */
@@ -75,7 +168,7 @@ class Utility extends Core
 
 //            TODO: Is it necessary? X Doubt
             $this->fireTandaEvent($request);
-            
+
             return $request;
         } catch (\Exception $e) {
             throw new TandaException($e->getMessage());
@@ -114,9 +207,15 @@ class Utility extends Core
 
                 break;
 
-            case Providers::KPLC:
-                $min = config('tanda.limits.bills.KPLC.min', 100);
-                $max = config('tanda.limits.bills.KPLC.max', 35000);
+            case Providers::KPLC_POSTPAID:
+                $min = config('tanda.limits.bills.KPLC_POSTPAID.min', 100);
+                $max = config('tanda.limits.bills.KPLC_POSTPAID.max', 35000);
+
+                break;
+
+            case Providers::KPLC_PREPAID:
+                $min = config('tanda.limits.bills.KPLC_PREPAID.min', 100);
+                $max = config('tanda.limits.bills.KPLC_PREPAID.max', 35000);
 
                 break;
 
