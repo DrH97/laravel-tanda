@@ -38,19 +38,28 @@ class Authenticator
      */
     public function authenticate(): string
     {
+        $this->generateCredentials();
+
         if (config('tanda.cache_credentials', false) && !empty($key = $this->getFromCache())) {
             return $key;
         }
 
-        $this->generateCredentials();
+        try {
+            $response = $this->makeRequest();
 
-        $response = $this->makeRequest();
-        if ($response->getStatusCode() === 200) {
-            $body = json_decode($response->getBody());
-            $this->saveCredentials($body);
-            return $body->access_token;
+            if ($response->getStatusCode() === 200) {
+                $body = json_decode($response->getBody());
+                $this->saveCredentials($body);
+                return $body->access_token;
+            }
+            throw new TandaException($response->getReasonPhrase());
+        } catch (RequestException $exception) {
+            $message = $exception->getResponse() ?
+                $exception->getResponse()->getReasonPhrase() :
+                $exception->getMessage();
+
+            throw new TandaException($message);
         }
-        throw new TandaException($response->getReasonPhrase());
     }
 
     /**
@@ -78,10 +87,6 @@ class Authenticator
     {
         $clientId = config('tanda.client_id', false);
         $clientSecret = config('tanda.client_id', false);
-
-        if (!$clientId || !$clientSecret) {
-            throw new TandaException("No Client Id/Secret specified.");
-        }
 
         return $this->client->clientInterface->request(
             'POST',

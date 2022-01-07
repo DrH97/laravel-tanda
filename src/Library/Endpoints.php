@@ -11,11 +11,21 @@ class Endpoints
     public const STATUS = '/io/v1/organizations/:organizationId/requests/:organizationId';
     public const BALANCE = '/wallets/v1/orgs/:organizationId/balances';
 
+    public const ENDPOINT_REQUEST_TYPES = [
+        self::AUTH => 'POST',
+        self::REQUEST => 'POST',
+        self::STATUS => 'GET'
+    ];
+
     /**
      * @throws TandaException
      */
     private static function getEndpoint(string $section): string
     {
+        if (!in_array($section, array_keys(self::ENDPOINT_REQUEST_TYPES))) {
+            throw new TandaException("Endpoint is invalid or does not exist.");
+        }
+
         $organizationId = config('tanda.organization_id', false);
 
         if (!$organizationId) {
@@ -25,7 +35,8 @@ class Endpoints
         $replaceItems = [
             ':organizationId' => $organizationId
         ];
-        str_replace(
+
+        $section = str_replace(
             array_keys($replaceItems),
             array_values($replaceItems),
             $section
@@ -39,9 +50,13 @@ class Endpoints
      */
     private static function getUrl(string $suffix): string
     {
-        $baseEndpoint = 'https://io-proxy-443.tanda.co.ke/';
+        $baseEndpoint = rtrim(
+            config('tanda.base.url') ?? 'https://io-proxy-443.tanda.co.ke/',
+            '/'
+        );
+
         if (config('tanda.sandbox')) {
-            $baseEndpoint .= 'sandbox/';
+            $baseEndpoint .= '/sandbox';
         }
         return $baseEndpoint . $suffix;
     }

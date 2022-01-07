@@ -1,12 +1,10 @@
 <?php
 
-namespace DrH\Tanda\Tests\Unit\Library;
+namespace DrH\Tanda\Tests\Library;
 
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Tests\MockServerTestCase;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 class AuthenticatorTest extends MockServerTestCase
@@ -32,10 +30,7 @@ class AuthenticatorTest extends MockServerTestCase
 
         (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
 
-        $clientId = config('tanda.client_id', false);
-        $clientSecret = config('tanda.client_id', false);
-
-        $accessToken = Cache::get(base64_encode($clientId . ':' . $clientSecret));
+        $accessToken = (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
 
         $this->assertEquals("token", $accessToken);
     }
@@ -57,9 +52,33 @@ class AuthenticatorTest extends MockServerTestCase
             new Response(401, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['auth_failure'])));
 
-        $this->expectException(ClientException::class);
+        $this->expectException(TandaException::class);
 
         Config::set('tanda.client_secret', 'somethingWRONGgoeshere');
+
+        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+    }
+
+    /** @test */
+    function throws_on_authentication_failure()
+    {
+        $this->mock->append(
+            new Response(401, ['Content_type' => 'application/json'],
+                json_encode($this->mockResponses['auth_failure'])));
+
+        $this->expectException(TandaException::class);
+
+        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+    }
+
+    /** @test */
+    function throws_on_unexpected_status_code()
+    {
+        $this->mock->append(
+            new Response(301, ['Content_type' => 'application/json'],
+                json_encode($this->mockResponses['auth_failure'])));
+
+        $this->expectException(TandaException::class);
 
         (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
     }
