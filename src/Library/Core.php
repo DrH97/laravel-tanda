@@ -137,9 +137,6 @@ class Core
         }
 
         if (!Str::startsWith($number, "254")) {
-        dd($number);
-
-        if (!Str::startsWith($number, "0")) {
             //  Means the number started with correct digits but after replacing,
             //  found invalid digit e.g. 254256000000
             //  254 isn't found and so 254 does not replace it, which means false number
