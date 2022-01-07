@@ -60,7 +60,7 @@ class Authenticator
     private function generateCredentials(): void
     {
         $clientId = config('tanda.client_id', false);
-        $clientSecret = config('tanda.client_id', false);
+        $clientSecret = config('tanda.client_secret', false);
 
         if (!$clientId || !$clientSecret) {
             throw new TandaException("No Client Id/Secret specified.");
