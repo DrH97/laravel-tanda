@@ -37,7 +37,7 @@ class Core
             $_body = json_decode($response->getBody());
 
             return (array)$_body;
-        } catch (ClientException|ServerException $exception) {
+        } catch (ClientException | ServerException $exception) {
             throw new TandaException($exception->getResponse()->getBody());
         }
     }

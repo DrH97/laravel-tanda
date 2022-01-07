@@ -103,7 +103,8 @@ class Utility extends Core
 
         $this->setCommand($this->provider);
 
-//        TODO: Check whether customerContact is necessary or what it is used for. $phone = $this->formatPhoneNumber($phone);
+//        TODO: Check whether customerContact is necessary or what it is used for.
+//              $phone = $this->formatPhoneNumber($phone);
         $requestParameters = [
             [
                 "id" => "accountNumber",
