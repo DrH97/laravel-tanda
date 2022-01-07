@@ -23,7 +23,8 @@ class Controller extends BaseController
      *
      * @throws TandaException
      */
-    public function airtimePurchase(Request $request): TandaRequest {
+    public function airtimePurchase(Request $request): TandaRequest
+    {
         $this->validateRequest([
             'phone' => 'required|integer|digits_between:9,12',
             'amount' => 'required|integer'
