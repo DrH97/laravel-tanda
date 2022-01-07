@@ -3,11 +3,17 @@
 namespace DrH\Tanda\Library;
 
 use DrH\Tanda\Exceptions\TandaException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Str;
+use Psr\Http\Message\ResponseInterface;
 
 class Core
 {
     private BaseClient $baseClient;
+
+    private string $bearer;
 
     /**
      *
@@ -16,6 +22,49 @@ class Core
     public function __construct(BaseClient $baseClient)
     {
         $this->baseClient = $baseClient;
+    }
+
+
+    /**
+     * @throws TandaException|GuzzleException
+     */
+    public function request(string $endpoint, array $body): array
+    {
+        $endpoint = Endpoints::build($endpoint);
+
+        try {
+            $response = $this->sendRequest($endpoint, $body);
+            $_body = json_decode($response->getBody());
+
+            return (array)$_body;
+        } catch (ClientException | ServerException $exception) {
+            throw new TandaException($exception->getResponse()->getBody());
+        }
+    }
+
+    /**
+     * @throws TandaException|GuzzleException
+     */
+    public function sendRequest(string $endpoint, array $body): ResponseInterface
+    {
+        $this->bearer = $this->baseClient->authenticator->authenticate();
+
+//        Added these to reduce redundancy in child classes
+        $body += [
+            'referenceParameters' => $this->getReferenceParameters()
+        ];
+
+        return $this->baseClient->clientInterface->request(
+            'POST',
+            $endpoint,
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->bearer,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $body,
+            ]
+        );
     }
 
     /**
@@ -96,5 +145,14 @@ class Core
         }
 
         return $number;
+    }
+
+    private function getReferenceParameters(): array
+    {
+        return [
+            "id" => "resultUrl",
+            "value" => config('tanda.urls.callback'),
+            "label" => "Hook"
+        ];
     }
 }
