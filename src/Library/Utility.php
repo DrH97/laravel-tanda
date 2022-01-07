@@ -14,7 +14,7 @@ class Utility extends Core
 
     private int $amount;
 
-    private string $phone;
+    private string $destination;
 
     private string $command;
 
@@ -27,19 +27,23 @@ class Utility extends Core
      * @throws GuzzleException
      * @throws TandaException
      */
-    public function airtimePurchase(int $phone, int $amount, int $relationId = null, bool $save = true): array
-    {
+    public function airtimePurchase(
+        int $phone,
+        int $amount,
+        int $relationId = null,
+        bool $save = true
+    ): array | TandaRequest {
         $this->validate("AIRTIME", $amount);
 
         $this->provider = $this->getTelcoFromPhone($phone);
-        $this->phone = $this->formatPhoneNumber($phone);
+        $this->destination = $this->formatPhoneNumber($phone);
         $this->amount = $amount;
         $this->setCommand($this->provider);
 
         $requestParameters = [
             [
                 "id" => "accountNumber",
-                "value" => $this->phone,
+                "value" => $this->destination,
                 "label" => "Customer's phone number"
             ],
             [
@@ -57,7 +61,7 @@ class Utility extends Core
         $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {
-            return (array)$this->saveRequest($response, $relationId);
+            return $this->saveRequest($response, $relationId);
         }
 
         return $response;
@@ -82,7 +86,7 @@ class Utility extends Core
         int $phone,
         int $relationId = null,
         bool $save = true
-    ): array {
+    ): array | TandaRequest {
         $allowedProviders = [
             Providers::KPLC_PREPAID,
             Providers::KPLC_POSTPAID,
@@ -100,6 +104,8 @@ class Utility extends Core
         }
 
         $this->provider = $provider;
+        $this->amount = $amount;
+        $this->destination = $phone;
 
         $this->setCommand($this->provider);
 
@@ -127,7 +133,7 @@ class Utility extends Core
         $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {
-            return (array)$this->saveRequest($response, $relationId);
+            return $this->saveRequest($response, $relationId);
         }
 
         return $response;
@@ -136,6 +142,7 @@ class Utility extends Core
     private function setCommand(string $provider)
     {
         $this->command = match ($provider) {
+            Providers::DSTV, Providers::GOTV, Providers::STARTIMES, Providers::ZUKU => Commands::TV_COMMAND,
             Providers::SAFARICOM, Providers::AIRTEL, Providers::TELKOM => Commands::AIRTIME_COMMAND,
             Providers::KPLC_POSTPAID, Providers::NAIROBI_WTR => Commands::POSTPAID_BILL_COMMAND,
             Providers::KPLC_PREPAID => Commands::KPLC_PREPAID_COMMAND,
@@ -157,7 +164,7 @@ class Utility extends Core
                 'provider' => $this->provider,
 
 //                TODO: Would it be better to decode the requestParameters and get below values??
-                'destination' => $this->phone,
+                'destination' => $this->destination,
                 'amount' => $this->amount,
 
                 'result' => $response['resultParameters'],
@@ -183,10 +190,10 @@ class Utility extends Core
     private function fireTandaEvent(TandaRequest $request): void
     {
 //        TODO: Check on proper status codes
-        if ($request->status == 0001) {
+        if ($request->status == 000001) {
             return;
         }
-        if ($request->status == 0000) {
+        if ($request->status == 000000) {
             event(new TandaRequestSuccessEvent($request));
         } else {
             event(new TandaRequestFailedEvent($request));

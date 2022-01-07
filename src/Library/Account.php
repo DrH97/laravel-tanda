@@ -17,7 +17,8 @@ class Account extends Core
      * @return array
      * @throws GuzzleException|TandaException
      */
-    public function balance(): array {
+    public function balance(): array
+    {
         return $this->request(Endpoints::BALANCE, []);
     }
 
@@ -28,7 +29,8 @@ class Account extends Core
      * @return array
      * @throws GuzzleException|TandaException
      */
-    public function transactionStatus(string $reference): array {
+    public function transactionStatus(string $reference): array
+    {
         $this->attachMerchantStart = true;
 
         $body = [

@@ -109,7 +109,7 @@ abstract class MockServerTestCase extends TestCase
             "resultParameters" => null
         ],
         'request_unsuccessful' => [
-            "status" => "500000",
+            "status" => "400000",
             "message" => "Unexpected error occurred.",
             "timestamp" => "2022-01-07 10:12:37.812 +0100"
         ]
