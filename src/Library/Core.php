@@ -3,9 +3,7 @@
 namespace DrH\Tanda\Library;
 
 use DrH\Tanda\Exceptions\TandaException;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
@@ -33,19 +31,16 @@ class Core
         $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
         $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
-        try {
-            $response = $this->sendRequest($method, $endpoint, $body);
+        $response = $this->sendRequest($method, $endpoint, $body);
 
-            $_body = json_decode($response->getBody());
+        $_body = json_decode($response->getBody());
 
-            if (!str_starts_with($response->getStatusCode(), "2")) {
-                throw new TandaException($_body->message ?
-                    $_body->status . ' - ' . $_body->message : $response->getBody());
-            }
-            return (array)$_body;
-        } catch (ClientException | ServerException $exception) {
-            throw new TandaException($exception->getResponse()->getBody());
+        if (!str_starts_with($response->getStatusCode(), "2")) {
+            throw new TandaException($_body->message ?
+                $_body->status . ' - ' . $_body->message : $response->getBody());
         }
+        return (array)$_body;
+
     }
 
     /**

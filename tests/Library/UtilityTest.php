@@ -19,7 +19,7 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_success'])));
+                json_encode($this->mockResponses['request_pending'])));
 
         $res = (new Utility($this->_client))->airtimePurchase(775432100, 10, null, false);
 
@@ -35,7 +35,7 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_success'])));
+                json_encode($this->mockResponses['request_pending'])));
 
         $res = (new Utility($this->_client))->airtimePurchase("700000000", 10);
 
@@ -61,7 +61,7 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_success'])));
+                json_encode($this->mockResponses['request_pending'])));
 
         $res = (new Utility($this->_client))->billPayment(765432100, 100, Providers::KPLC_POSTPAID, 765432100, null, false);
 
@@ -77,7 +77,7 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_success'])));
+                json_encode($this->mockResponses['request_pending'])));
 
         $res = (new Utility($this->_client))->billPayment(765432100, 10, Providers::DSTV, 765432100);
 
@@ -100,5 +100,22 @@ class UtilityTest extends MockServerTestCase
         $this->expectException(TandaException::class);
 
         (new Utility($this->_client))->billPayment(765432100, 10, Providers::KPLC_POSTPAID, 765432100, null, false);
+    }
+
+
+    /** @test */
+    function request_status()
+    {
+        $this->mock->append(
+            new Response(200, ['Content_type' => 'application/json'],
+                json_encode($this->mockResponses['auth_success'])));
+        $this->mock->append(
+            new Response(200, ['Content_type' => 'application/json'],
+                json_encode($this->mockResponses['request_success'])));
+
+        $status = (new Utility($this->_client))->requestStatus("6c8fed6c-6548-4947-9aa6-19d70c85c332");
+
+        $this->assertIsArray($status);
+        $this->assertEquals(000000, $status['status']);
     }
 }
