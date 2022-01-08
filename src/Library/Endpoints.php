@@ -8,19 +8,20 @@ class Endpoints
 {
     public const AUTH = '/accounts/v1/oauth/token';
     public const REQUEST = '/io/v1/organizations/:organizationId/requests';
-    public const STATUS = '/io/v1/organizations/:organizationId/requests/:organizationId';
+    public const STATUS = self::REQUEST . '/:requestId';
     public const BALANCE = '/wallets/v1/orgs/:organizationId/balances';
 
     public const ENDPOINT_REQUEST_TYPES = [
         self::AUTH => 'POST',
         self::REQUEST => 'POST',
-        self::STATUS => 'GET'
+        self::STATUS => 'GET',
+        self::BALANCE => 'GET',
     ];
 
     /**
      * @throws TandaException
      */
-    private static function getEndpoint(string $section): string
+    private static function getEndpoint(string $section, $replace = []): string
     {
         if (!in_array($section, array_keys(self::ENDPOINT_REQUEST_TYPES))) {
             throw new TandaException("Endpoint is invalid or does not exist.");
@@ -34,7 +35,7 @@ class Endpoints
 
         $replaceItems = [
             ':organizationId' => $organizationId
-        ];
+        ] + $replace;
 
         $section = str_replace(
             array_keys($replaceItems),
@@ -61,8 +62,8 @@ class Endpoints
         return $baseEndpoint . $suffix;
     }
 
-    public static function build(string $endpoint): string
+    public static function build(string $endpoint, $replace = []): string
     {
-        return self::getEndpoint($endpoint);
+        return self::getEndpoint($endpoint, $replace);
     }
 }
