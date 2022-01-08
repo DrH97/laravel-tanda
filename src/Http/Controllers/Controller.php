@@ -3,6 +3,7 @@
 namespace DrH\Tanda\Http\Controllers;
 
 use DrH\Tanda\Exceptions\TandaException;
+use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
 use DrH\Tanda\Models\TandaRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -17,6 +18,30 @@ class Controller extends BaseController
     use AuthorizesRequests;
     use DispatchesJobs;
     use ValidatesRequests;
+
+    /**
+     * -----------------------------------------------------------------------------    ACCOUNT
+     *
+     * @return array
+     */
+    public function accountBalance(): array
+    {
+        return Account::balance();
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @throws TandaException
+     */
+    public function transactionStatus(Request $request): array
+    {
+        if (!$request->has('reference')) {
+            throw new TandaException("Transaction reference is missing.");
+        }
+
+        return Account::transactionStatus($request->input('reference'));
+    }
 
     /**
      * -----------------------------------------------------------------------------------------------    UTILITY
