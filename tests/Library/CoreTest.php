@@ -19,7 +19,7 @@ class CoreTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_success'])));
+                json_encode($this->mockResponses['request_pending'])));
 
         $req = (new Core($this->_client))->request(Endpoints::REQUEST, []);
 

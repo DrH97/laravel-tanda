@@ -28,7 +28,7 @@ abstract class MockServerTestCase extends TestCase
         $this->mock = new MockHandler();
 
         $handlerStack = HandlerStack::create($this->mock);
-        $this->_client = new BaseClient(new Client(['handler' => $handlerStack]));
+        $this->_client = new BaseClient(new Client(['handler' => $handlerStack, 'http_errors' => false]));
     }
 
     protected array $mockResponses = [
@@ -46,10 +46,41 @@ abstract class MockServerTestCase extends TestCase
             'Account_Bal' => 399930,
             'Earnings_Bal' => 1586.6
         ],
-        'request_success' => [
-            "id" => "6c8fed6c-6548-4947-9aa6-19d70c85c332",
+        'request_pending' => [
+            "id" => "d33d079c-6bf2-430f-a1c9-d3cf45f8671a",
             "status" => "000001",
             "message" => "Request received successfully.",
+            "receiptNumber" => null,
+            "commandId" => "TopupFlexi",
+            "serviceProviderId" => "SAFARICOM",
+            "datetimeCreated" => "2022-01-06 12:50:27.878 +0100",
+            "datetimeLastModified" => "2022-01-06 12:50:28.034 +0100",
+            "datetimeCompleted" => "2022-01-06 12:50:28.034 +0100",
+            "requestParameters" => [
+                [
+                    "id" => "accountNumber",
+                    "value" => "254714611696",
+                    "label" => "Customer's phone number"
+                ],
+                [
+                    "id" => "amount",
+                    "value" => "10.00",
+                    "label" => "Amount"
+                ]
+            ],
+            "referenceParameters" => [
+                [
+                    "id" => "resultUrl",
+                    "value" => "https://my-test.free.beeceptor.com/results",
+                    "label" => "Callback URL"
+                ]
+            ],
+            "resultParameters" => null
+        ],
+        'request_success' => [
+            "id" => "6c8fed6c-6548-4947-9aa6-19d70c85c332",
+            "status" => "000000",
+            "message" => "Payment successful",
             "receiptNumber" => null,
             "commandId" => "TopupFlexi",
             "serviceProviderId" => "SAFARICOM",
