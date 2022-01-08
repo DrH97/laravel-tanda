@@ -14,7 +14,10 @@ class Account extends Core
      */
     public function balance(): array
     {
-        return $this->request(Endpoints::BALANCE, []);
+        $params = [
+            'accountTypes' => '01,02'
+        ];
+        return $this->request(Endpoints::BALANCE, [], [], $params);
     }
 
 }

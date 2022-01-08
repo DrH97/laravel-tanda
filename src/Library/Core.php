@@ -28,9 +28,9 @@ class Core
     /**
      * @throws TandaException|GuzzleException
      */
-    public function request(string $endpointSuffix, array $body, $replace = []): array
+    public function request(string $endpointSuffix, array $body, array $replace = [], array $params = null): array
     {
-        $endpoint = Endpoints::build($endpointSuffix, $replace);
+        $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
         $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
         try {

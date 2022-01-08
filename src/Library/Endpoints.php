@@ -21,7 +21,7 @@ class Endpoints
     /**
      * @throws TandaException
      */
-    private static function getEndpoint(string $section, $replace = []): string
+    private static function getEndpoint(string $section, array $replace = [], array|null $params = null): string
     {
         if (!in_array($section, array_keys(self::ENDPOINT_REQUEST_TYPES))) {
             throw new TandaException("Endpoint is invalid or does not exist.");
@@ -42,14 +42,14 @@ class Endpoints
             array_values($replaceItems),
             $section
         );
-        return self::getUrl($section);
+        return self::getUrl($section, $params);
     }
 
     /**
      * @param string $suffix
      * @return string
      */
-    private static function getUrl(string $suffix): string
+    private static function getUrl(string $suffix, array|null $params = null): string
     {
         $baseEndpoint = rtrim(
             config('tanda.base.url') ?? 'https://io-proxy-443.tanda.co.ke/',
@@ -59,11 +59,20 @@ class Endpoints
         if (config('tanda.sandbox')) {
             $baseEndpoint .= '/sandbox';
         }
-        return $baseEndpoint . $suffix;
+
+        $url = $baseEndpoint . $suffix;
+        if ($params) {
+            $url .= '?';
+            foreach ($params as $key => $value) {
+                $url .= $key . '=' . $value . '&';
+            }
+        }
+
+        return $url;
     }
 
-    public static function build(string $endpoint, $replace = []): string
+    public static function build(string $endpoint, array $replace = [], array $params = null): string
     {
-        return self::getEndpoint($endpoint, $replace);
+        return self::getEndpoint($endpoint, $replace, $params);
     }
 }
