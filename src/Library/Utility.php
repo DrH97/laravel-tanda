@@ -57,7 +57,7 @@ class Utility extends Core
             'serviceProviderId' => $this->provider,
             'requestParameters' => $requestParameters
         ];
-
+        
         $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {

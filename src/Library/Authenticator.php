@@ -52,6 +52,7 @@ class Authenticator
                 $this->saveCredentials($body);
                 return $body->access_token;
             }
+
             throw new TandaException($response->getReasonPhrase());
         } catch (RequestException $exception) {
             $message = $exception->getResponse() ?
