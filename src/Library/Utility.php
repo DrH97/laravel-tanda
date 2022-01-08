@@ -139,6 +139,18 @@ class Utility extends Core
         return $response;
     }
 
+    //  Check request status
+
+    /**
+     * @param string $reference
+     * @return array
+     * @throws GuzzleException|TandaException
+     */
+    public function requestStatus(string $reference): array
+    {
+        return $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
+    }
+
     private function setCommand(string $provider)
     {
         $this->command = match ($provider) {

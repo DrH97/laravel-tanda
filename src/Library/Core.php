@@ -28,17 +28,19 @@ class Core
     /**
      * @throws TandaException|GuzzleException
      */
-    public function request(string $endpointSuffix, array $body): array
+    public function request(string $endpointSuffix, array $body, array $replace = [], array $params = null): array
     {
-        $endpoint = Endpoints::build($endpointSuffix);
+        $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
         $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
         try {
             $response = $this->sendRequest($method, $endpoint, $body);
+
             $_body = json_decode($response->getBody());
+
             if (!str_starts_with($response->getStatusCode(), "2")) {
-                throw new TandaException($_body->errorMessage ?
-                    $_body->errorCode . ' - ' . $_body->errorMessage : $response->getBody());
+                throw new TandaException($_body->message ?
+                    $_body->status . ' - ' . $_body->message : $response->getBody());
             }
             return (array)$_body;
         } catch (ClientException | ServerException $exception) {

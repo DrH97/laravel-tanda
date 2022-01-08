@@ -5,11 +5,6 @@ namespace DrH\Tanda\Library;
 use DrH\Tanda\Exceptions\TandaException;
 use GuzzleHttp\Exception\GuzzleException;
 
-/**
- * Class Account
- *
- * @package Nabcellent\Kyanda\Library
- */
 class Account extends Core
 {
     //  Check account balance
@@ -19,24 +14,10 @@ class Account extends Core
      */
     public function balance(): array
     {
-        return $this->request(Endpoints::BALANCE, []);
-    }
-
-    //  Check transaction status
-
-    /**
-     * @param string $reference
-     * @return array
-     * @throws GuzzleException|TandaException
-     */
-    public function transactionStatus(string $reference): array
-    {
-        $this->attachMerchantStart = true;
-
-        $body = [
-            "transactionRef" => $reference,
+        $params = [
+            'accountTypes' => '01,02'
         ];
-
-        return $this->request('transaction_status', $body);
+        return $this->request(Endpoints::BALANCE, [], [], $params);
     }
+
 }
