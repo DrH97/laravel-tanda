@@ -2,11 +2,12 @@
 
 namespace DrH\Tanda\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use DrH\Tanda\Models\TandaRequest as TR;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static TR airtimePurchase(int $phone, int $amount, int $relationId = null)
+ * @method static array requestStatus(string $reference)
  *
  * @see \DrH\Tanda\Library\Utility
  */

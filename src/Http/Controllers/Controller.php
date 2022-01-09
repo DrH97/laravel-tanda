@@ -34,13 +34,13 @@ class Controller extends BaseController
      * @return array
      * @throws TandaException
      */
-    public function transactionStatus(Request $request): array
+    public function requestStatus(Request $request): array
     {
         if (!$request->has('reference')) {
             throw new TandaException("Transaction reference is missing.");
         }
 
-        return Account::transactionStatus($request->input('reference'));
+        return Utility::requestStatus($request->input('reference'));
     }
 
     /**
@@ -51,8 +51,8 @@ class Controller extends BaseController
     public function airtimePurchase(Request $request): TandaRequest
     {
         $this->validateRequest([
-            'phone' => 'required|integer|digits_between:9,12',
-            'amount' => 'required|integer'
+            'phone' => 'required|regex:/[0-9]+/|digits_between:9,12',
+            'amount' => 'required|regex:/[0-9]+/'
         ], $request, [
             'phone.required' => 'Phone number is required.',
             'phone.integer' => 'Invalid phone number. Must not start with zero.',
