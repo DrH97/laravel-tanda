@@ -83,7 +83,6 @@ class Utility extends Core
         int $accountNo,
         int $amount,
         string $provider,
-        int $phone,
         int $relationId = null,
         bool $save = true
     ): array | TandaRequest {
@@ -107,9 +106,13 @@ class Utility extends Core
 
         $this->provider = $provider;
         $this->amount = $amount;
-        $this->destination = $phone;
+        $this->destination = $accountNo;
 
         $this->setCommand($this->provider);
+
+        if(in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
+            $this->provider = 'KPLC';
+        }
 
 //        TODO: Check whether customerContact is necessary or what it is used for.
 //              $phone = $this->formatPhoneNumber($phone);

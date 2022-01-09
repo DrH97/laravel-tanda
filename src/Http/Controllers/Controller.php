@@ -66,17 +66,17 @@ class Controller extends BaseController
     /**
      * @throws TandaException
      */
-    public function billPayment(Request $request): array
+    public function billPayment(Request $request): array|TandaRequest
     {
         $this->validateRequest([
             'account_no' => 'required|integer',
             'amount' => 'required|integer',
             'provider' => 'required|string',
-            'phone' => 'required|regex:/[0-9]+/|digits_between:9,12',
+//            'phone' => 'required|regex:/[0-9]+/|digits_between:9,12',
         ], $request, [
-            'phone.required' => 'Phone number is required.',
-            'phone.integer' => 'Invalid phone number. Must not start with zero.',
-            'phone.digits_between' => 'The phone number must be between 9 and 12 digits long.',
+//            'phone.required' => 'Phone number is required.',
+//            'phone.integer' => 'Invalid phone number. Must not start with zero.',
+//            'phone.digits_between' => 'The phone number must be between 9 and 12 digits long.',
             'account_no.integer' => 'Invalid account number. Must not start with zero.',
             'amount.integer' => 'Invalid amount. Must not start with zero.',
             'provider.required' => 'Service provider(telco) is required.',
