@@ -3,11 +3,8 @@
 namespace DrH\Tanda\Library;
 
 use Carbon\Carbon;
-use DrH\Tanda\Events\TandaRequestFailedEvent;
-use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
-use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Utility extends Core
