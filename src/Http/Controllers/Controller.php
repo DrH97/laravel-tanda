@@ -30,20 +30,6 @@ class Controller extends BaseController
     }
 
     /**
-     * @param Request $request
-     * @return array
-     * @throws TandaException
-     */
-    public function requestStatus(Request $request): array
-    {
-        if (!$request->has('reference')) {
-            throw new TandaException("Transaction reference is missing.");
-        }
-
-        return Utility::requestStatus($request->input('reference'));
-    }
-
-    /**
      * -----------------------------------------------------------------------------------------------    UTILITY
      *
      * @throws TandaException
@@ -72,11 +58,7 @@ class Controller extends BaseController
             'account_no' => 'required|integer',
             'amount' => 'required|integer',
             'provider' => 'required|string',
-//            'phone' => 'required|regex:/[0-9]+/|digits_between:9,12',
         ], $request, [
-//            'phone.required' => 'Phone number is required.',
-//            'phone.integer' => 'Invalid phone number. Must not start with zero.',
-//            'phone.digits_between' => 'The phone number must be between 9 and 12 digits long.',
             'account_no.integer' => 'Invalid account number. Must not start with zero.',
             'amount.integer' => 'Invalid amount. Must not start with zero.',
             'provider.required' => 'Service provider(telco) is required.',
@@ -86,8 +68,21 @@ class Controller extends BaseController
             $request->input('account_no'),
             $request->input('amount'),
             $request->input('provider'),
-            $request->input('phone'),
         );
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @throws TandaException
+     */
+    public function requestStatus(Request $request): array
+    {
+        if (!$request->has('reference')) {
+            throw new TandaException("Transaction reference is missing.");
+        }
+
+        return Utility::requestStatus($request->input('reference'));
     }
 
 

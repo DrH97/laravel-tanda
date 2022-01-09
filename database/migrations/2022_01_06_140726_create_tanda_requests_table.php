@@ -21,7 +21,7 @@ class CreateTandaRequestsTable extends Migration
                 $table->string('request_id')->unique();
                 $table->string('status');
                 $table->string('message');
-//                $table->string('receipt_number')->nullable();
+                $table->string('receipt_number')->nullable();
                 $table->string('command_id');
                 $table->string('provider');
                 $table->string('destination');
