@@ -63,7 +63,7 @@ class UtilityTest extends MockServerTestCase
             new Response(200, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['request_pending'])));
 
-        $res = (new Utility($this->_client))->billPayment(765432100, 100, Providers::KPLC_POSTPAID, 765432100, null, false);
+        $res = (new Utility($this->_client))->billPayment(765432100, 100, Providers::KPLC_POSTPAID, 765432100, false);
 
         $this->assertIsArray($res);
         $this->assertEquals('000001', $res['status']);
@@ -100,7 +100,7 @@ class UtilityTest extends MockServerTestCase
     {
         $this->expectException(TandaException::class);
 
-        (new Utility($this->_client))->billPayment(765432100, 10, Providers::KPLC_POSTPAID, 765432100, null, false);
+        (new Utility($this->_client))->billPayment(765432100, 10, Providers::KPLC_POSTPAID, 765432100, false);
     }
 
 
