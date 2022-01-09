@@ -11,8 +11,6 @@ class Core
 {
     private BaseClient $baseClient;
 
-    private string $bearer;
-
     /**
      *
      * @param BaseClient $baseClient
@@ -43,25 +41,25 @@ class Core
     }
 
     /**
-     * @throws TandaException|GuzzleException
+     * @throws GuzzleException|TandaException
      */
-    public function sendRequest(string $method, string $endpoint, array $body): ResponseInterface
+    public function sendRequest(string $method, string $url, array $body): ResponseInterface
     {
-        $this->bearer = $this->baseClient->authenticator->authenticate();
+        $bearer = $this->baseClient->authenticator->authenticate();
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $bearer,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $this->getBody($body),
+        ];
 
         return $this->baseClient->clientInterface->request(
             $method,
-            $endpoint,
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->bearer,
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => $this->getBody($body),
-            ]
+            $url,
+            $options
         );
     }
-
 
     public function getBody(array $body): array
     {
