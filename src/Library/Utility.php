@@ -151,7 +151,17 @@ class Utility extends Core
      */
     public function requestStatus(string $reference): array
     {
-        return $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
+        $response = $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
+
+        TandaRequest::whereRequestId($response)->update([
+            'status' => $response['status'],
+            'message' => $response['message'],
+            'receipt_number' => $response['receiptNumber'],
+            'result' => $response['resultParameters'],
+            'last_modified' => Carbon::parse($response['datetimeLastModified'])->utc(),
+        ]);
+
+        return $response;
     }
 
     private function setCommand(string $provider)
