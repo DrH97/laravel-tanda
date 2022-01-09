@@ -3,6 +3,8 @@
 namespace DrH\Tanda\Library;
 
 use Carbon\Carbon;
+use DrH\Tanda\Events\TandaRequestFailedEvent;
+use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use Exception;
@@ -208,7 +210,7 @@ class Utility extends Core
             $this->fireTandaEvent($request);
 
             return $request;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new TandaException($e->getMessage());
         }
     }
