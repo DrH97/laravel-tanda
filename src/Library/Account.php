@@ -19,5 +19,4 @@ class Account extends Core
         ];
         return $this->request(Endpoints::BALANCE, [], [], $params);
     }
-
 }

@@ -40,7 +40,6 @@ class Core
                 $_body->status . ' - ' . $_body->message : $response->getBody());
         }
         return (array)$_body;
-
     }
 
     /**
@@ -50,11 +49,6 @@ class Core
     {
         $this->bearer = $this->baseClient->authenticator->authenticate();
 
-//        Added these to reduce redundancy in child classes
-        $body += [
-            'referenceParameters' => $this->getReferenceParameters()
-        ];
-
         return $this->baseClient->clientInterface->request(
             $method,
             $endpoint,
@@ -63,9 +57,20 @@ class Core
                     'Authorization' => 'Bearer ' . $this->bearer,
                     'Content-Type' => 'application/json',
                 ],
-                'json' => $body,
+                'json' => $this->getBody($body),
             ]
         );
+    }
+
+
+    public function getBody(array $body): array
+    {
+//        Added these to reduce redundancy in child classes
+        $body += [
+            'referenceParameters' => $this->getReferenceParameters()
+        ];
+
+        return $body;
     }
 
     /**
@@ -149,9 +154,11 @@ class Core
     private function getReferenceParameters(): array
     {
         return [
-            "id" => "resultUrl",
-            "value" => config('tanda.urls.callback'),
-            "label" => "Hook"
+            [
+                "id" => "resultUrl",
+                "value" => config('tanda.urls.callback'),
+                "label" => "Callback URL"
+            ]
         ];
     }
 }
