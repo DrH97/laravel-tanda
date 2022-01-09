@@ -6,7 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/DrH97/laravel-tanda/downloads)](https://packagist.org/packages/drh/laravel-tanda)
 [![License](https://poser.pugx.org/DrH97/laravel-tanda/license)](https://github.com/DrH97/laravel-tanda/blob/master/LICENSE.md)
 
-This is a <i>Laravel 8</i> package that interfaces with [Tanda](https://www.tanda.africa/) Payments Api.
+This is a <i>Laravel</i> package that interfaces with [Tanda](https://www.tanda.africa/) Payments Api.
 The API enables you to initiate mobile payments, disburse payments to mobile and bank, purchase airtime & bundles* and to pay for utility bills.
 
 Check out their [api documentation](https://www.tanda.africa/api).

@@ -2,7 +2,10 @@
 
 namespace DrH\Tanda\Library;
 
+use DrH\Tanda\Events\TandaRequestFailedEvent;
+use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
+use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
@@ -158,5 +161,21 @@ class Core
                 "label" => "Callback URL"
             ]
         ];
+    }
+
+    /**
+     * @param TandaRequest $request
+     * @return void
+     */
+    protected function fireTandaEvent(TandaRequest $request): void
+    {
+        if ($request->status == 000001) {
+            return;
+        }
+        if ($request->status == 000000) {
+            event(new TandaRequestSuccessEvent($request));
+        } else {
+            event(new TandaRequestFailedEvent($request));
+        }
     }
 }

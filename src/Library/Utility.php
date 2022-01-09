@@ -2,8 +2,6 @@
 
 namespace DrH\Tanda\Library;
 
-use DrH\Tanda\Events\TandaRequestFailedEvent;
-use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -196,29 +194,10 @@ class Utility extends Core
     }
 
     /**
-     * @param TandaRequest $request
-     * @return void
-     */
-    private function fireTandaEvent(TandaRequest $request): void
-    {
-//        TODO: Check on proper status codes
-        if ($request->status == 000001) {
-            return;
-        }
-        if ($request->status == 000000) {
-            event(new TandaRequestSuccessEvent($request));
-        } else {
-            event(new TandaRequestFailedEvent($request));
-        }
-    }
-
-    /**
      * @throws TandaException
      */
     private function validate(string $validationType, int $amount): void
     {
-        $min = 0;
-        $max = 0;
 
         switch ($validationType) {
             case "AIRTIME":
