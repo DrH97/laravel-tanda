@@ -2,6 +2,7 @@
 
 namespace DrH\Tanda\Library;
 
+use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use Exception;
@@ -154,13 +155,19 @@ class Utility extends Core
     {
         $response = $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
 
-        TandaRequest::whereRequestId($response)->update([
-            'status' => $response['status'],
-            'message' => $response['message'],
-            'receipt_number' => $response['receiptNumber'],
-            'result' => $response['resultParameters'],
-            'last_modified' => Carbon::parse($response['datetimeLastModified'])->utc(),
-        ]);
+        $request = TandaRequest::whereRequestId($response['id'])->first();
+
+        if($request && $request->status !== $response['status']) {
+            $request->update([
+                'status' => $response['status'],
+                'message' => $response['message'],
+                'receipt_number' => $response['receiptNumber'],
+                'result' => $response['resultParameters'],
+                'last_modified' => Carbon::parse($response['datetimeLastModified'])->utc(),
+            ]);
+
+            $this->fireTandaEvent($request);
+        }
 
         return $response;
     }
