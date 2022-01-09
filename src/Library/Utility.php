@@ -4,6 +4,7 @@ namespace DrH\Tanda\Library;
 
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Utility extends Core
@@ -191,11 +192,8 @@ class Utility extends Core
 //                TODO: Would it be better to decode the requestParameters and get below values??
                 'destination' => $this->destination,
                 'amount' => $this->amount,
-
                 'result' => $response['resultParameters'],
-
                 'last_modified' => $response['datetimeLastModified'],
-
                 'relation_id' => $relationId
             ]);
 
@@ -203,7 +201,7 @@ class Utility extends Core
             $this->fireTandaEvent($request);
 
             return $request;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new TandaException($e->getMessage());
         }
     }

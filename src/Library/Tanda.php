@@ -8,14 +8,18 @@ use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
+use JetBrains\PhpStorm\ArrayShape;
 
 class Tanda
 {
+    private Utility $utility;
+
     public function __construct(BaseClient $baseClient)
     {
         $this->utility = new Utility($baseClient);
     }
 
+    #[ArrayShape(['successful' => "array", 'errors' => "array"])]
     public function queryRequestStatus(): array
     {
         /** @var TandaRequest::[] $tandaRequests */
@@ -26,7 +30,7 @@ class Tanda
             try {
                 $result = $this->utility->requestStatus($request->request_id);
 
-                $success[$request->request_id] = $result->message;
+                $success[$request->request_id] = $result['message'];
 
                 $data = [
                     'status'         => $result['status'],
@@ -40,23 +44,25 @@ class Tanda
                     ['request_id' => $result['id']], $data
                 );
 
-                $this->fireKyandaEvent($transaction);
+                $this->fireTandaEvent($transaction);
             } catch (TandaException | GuzzleException $e) {
                 $errors[$request->merchant_reference] = $e->getMessage();
             }
         }
+
         return ['successful' => $success, 'errors' => $errors];
     }
 
     /**
-     * @param TandaRequest $tandaCallback
+     * @param TandaRequest $request
      * @return void
      */
-    private function fireKyandaEvent(TandaRequest $tandaCallback): void
+    private function fireTandaEvent(TandaRequest $request): void
     {
-//        TODO: Check on proper status codes
-        in_array($tandaCallback['status_code'], [000001, 000002])
-            ? TandaRequestSuccessEvent::dispatch($tandaCallback)
-            : TandaRequestFailedEvent::dispatch($tandaCallback);
+        if ($request->status == 000001) return;
+
+        in_array($request->status, [000000, 000002])
+            ? TandaRequestSuccessEvent::dispatch($request)
+            : TandaRequestFailedEvent::dispatch($request);
     }
 }
