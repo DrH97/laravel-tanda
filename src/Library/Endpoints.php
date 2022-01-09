@@ -21,7 +21,7 @@ class Endpoints
     /**
      * @throws TandaException
      */
-    private static function getEndpoint(string $section, array $replace = [], array|null $params = null): string
+    private static function getEndpoint(string $section, array $replace = [], array | null $params = null): string
     {
         if (!in_array($section, array_keys(self::ENDPOINT_REQUEST_TYPES))) {
             throw new TandaException("Endpoint is invalid or does not exist.");
@@ -49,7 +49,7 @@ class Endpoints
      * @param string $suffix
      * @return string
      */
-    private static function getUrl(string $suffix, array|null $params = null): string
+    private static function getUrl(string $suffix, array | null $params = null): string
     {
         $baseEndpoint = rtrim(
             config('tanda.base.url') ?? 'https://io-proxy-443.tanda.co.ke/',

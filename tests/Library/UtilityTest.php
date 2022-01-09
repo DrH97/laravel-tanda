@@ -35,12 +35,12 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_pending'])));
+                json_encode($this->mockResponses['request_success'])));
 
         $res = (new Utility($this->_client))->airtimePurchase("700000000", 10);
 
         $this->assertInstanceOf(TandaRequest::class, $res);
-        $this->assertEquals(000001, $res->status);
+        $this->assertEquals(000000, $res->status);
     }
 
     /** @test */
@@ -77,12 +77,13 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['auth_success'])));
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
-                json_encode($this->mockResponses['request_pending'])));
+                json_encode($this->mockResponses['request_failed'])));
 
+//        TODO: Make tests cover all providers and commands
         $res = (new Utility($this->_client))->billPayment(765432100, 10, Providers::DSTV, 765432100);
 
         $this->assertInstanceOf(TandaRequest::class, $res);
-        $this->assertEquals(000001, $res->status);
+        $this->assertEquals(000002, $res->status);
         $this->assertEquals(Providers::DSTV, $res->provider);
     }
 
