@@ -57,7 +57,7 @@ class Tanda
      * @param TandaRequest $request
      * @return void
      */
-    private function fireTandaEvent(TandaRequest $request): void
+    static function fireTandaEvent(TandaRequest $request): void
     {
         if ($request->status == 000001) return;
 

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
+use DrH\Tanda\Library\Tanda;
 use DrH\Tanda\Models\TandaRequest;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -77,11 +78,13 @@ class Controller extends BaseController
     public function instantPaymentNotification(Request $request)
     {
         try {
-            TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
+            $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
                 'status' => $request->input('status'),
                 'message' => $request->input('message'),
                 'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
             ]);
+
+            Tanda::fireTandaEvent($tandaRequest);
         } catch (QueryException $e) {
             Log::info('Error updating instant payment notification. - ' . $e->getMessage());
         }
