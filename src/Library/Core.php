@@ -85,26 +85,13 @@ class Core
         $equReg = '/^(?:254|\+254|0)?(7(6[3-6])[0-9]{6})$/';
         $faibaReg = '/^(?:254|\+254|0)?(747[0-9]{6})$/';
 
-        switch (1) {
-            case preg_match($safReg, $phone):
-                $result = Providers::SAFARICOM;
-                break;
-            case preg_match($airReg, $phone):
-                $result = Providers::AIRTEL;
-                break;
-            case preg_match($telReg, $phone):
-                $result = Providers::TELKOM;
-                break;
-//            case preg_match($equReg, $phone):
-//                $result = Providers::EQUITEL;
-//                break;
-            case preg_match($faibaReg, $phone):
-                $result = Providers::FAIBA;
-                break;
-            default:
-                $result = null;
-                break;
-        }
+        $result = match (1) {
+            preg_match($safReg, $phone) => Providers::SAFARICOM,
+            preg_match($airReg, $phone) => Providers::AIRTEL,
+            preg_match($telReg, $phone) => Providers::TELKOM,
+            preg_match($faibaReg, $phone) => Providers::FAIBA,
+            default => null,
+        };
 
         if (!$result) {
             throw new TandaException("Phone does not seem to be valid or supported");
@@ -169,9 +156,8 @@ class Core
      */
     protected function fireTandaEvent(TandaRequest $request): void
     {
-        if ($request->status == 000001) {
-            return;
-        }
+        if ($request->status == 000001) return;
+
         if ($request->status == 000000) {
             event(new TandaRequestSuccessEvent($request));
         } else {
