@@ -5,7 +5,7 @@ namespace DrH\Tanda\Console;
 use DrH\Tanda\Library\Tanda;
 use Illuminate\Console\Command;
 
-class TransactionStatusCommand extends Command
+class RequestStatusCommand extends Command
 {
     /**
      * The name and signature of the console command.

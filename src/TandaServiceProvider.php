@@ -92,7 +92,7 @@ class TandaServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\InstallCommand::class,
-                Console\TransactionStatusCommand::class
+                Console\RequestStatusCommand::class
             ]);
         }
     }

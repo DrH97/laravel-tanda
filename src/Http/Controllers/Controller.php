@@ -2,15 +2,18 @@
 
 namespace DrH\Tanda\Http\Controllers;
 
+use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
 use DrH\Tanda\Models\TandaRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class Controller extends BaseController
@@ -69,6 +72,19 @@ class Controller extends BaseController
             $request->input('amount'),
             $request->input('provider'),
         );
+    }
+
+    public function instantPaymentNotification(Request $request)
+    {
+        try {
+            TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
+                'status' => $request->input('status'),
+                'message' => $request->input('message'),
+                'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
+            ]);
+        } catch (QueryException $e) {
+            Log::info('Error updating instant payment notification. - ' . $e->getMessage());
+        }
     }
 
     /**
