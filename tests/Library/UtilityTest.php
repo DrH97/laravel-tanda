@@ -105,7 +105,7 @@ class UtilityTest extends MockServerTestCase
 
 
     /** @test */
-    function request_status()
+    function request_status_is_successful()
     {
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
