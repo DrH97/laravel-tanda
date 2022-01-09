@@ -87,6 +87,8 @@ class Utility extends Core
         int $relationId = null,
         bool $save = true
     ): array | TandaRequest {
+        $provider = strtoupper($provider);
+
         $allowedProviders = [
             Providers::KPLC_PREPAID,
             Providers::KPLC_POSTPAID,
@@ -99,7 +101,7 @@ class Utility extends Core
 
         $this->validate($provider, $amount);
 
-        if (!in_array(strtoupper($provider), $allowedProviders)) {
+        if (!in_array($provider, $allowedProviders)) {
             throw new TandaException("Provider does not seem to be valid or supported");
         }
 
