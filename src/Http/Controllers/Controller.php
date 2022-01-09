@@ -3,6 +3,7 @@
 namespace DrH\Tanda\Http\Controllers;
 
 use DrH\Tanda\Exceptions\TandaException;
+use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
 use DrH\Tanda\Models\TandaRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -19,6 +20,30 @@ class Controller extends BaseController
     use ValidatesRequests;
 
     /**
+     * -----------------------------------------------------------------------------    ACCOUNT
+     *
+     * @return array
+     */
+    public function accountBalance(): array
+    {
+        return Account::balance();
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @throws TandaException
+     */
+    public function requestStatus(Request $request): array
+    {
+        if (!$request->has('reference')) {
+            throw new TandaException("Transaction reference is missing.");
+        }
+
+        return Utility::requestStatus($request->input('reference'));
+    }
+
+    /**
      * -----------------------------------------------------------------------------------------------    UTILITY
      *
      * @throws TandaException
@@ -26,8 +51,8 @@ class Controller extends BaseController
     public function airtimePurchase(Request $request): TandaRequest
     {
         $this->validateRequest([
-            'phone' => 'required|integer|digits_between:9,12',
-            'amount' => 'required|integer'
+            'phone' => 'required|regex:/[0-9]+/|digits_between:9,12',
+            'amount' => 'required|regex:/[0-9]+/'
         ], $request, [
             'phone.required' => 'Phone number is required.',
             'phone.integer' => 'Invalid phone number. Must not start with zero.',
