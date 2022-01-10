@@ -41,14 +41,14 @@ class Utility extends Core
 
         $requestParameters = [
             [
-                "id" => "accountNumber",
-                "value" => $this->destination,
-                "label" => "Customer's phone number"
-            ],
-            [
                 "id" => "amount",
                 "value" => $this->amount,
                 "label" => "Amount"
+            ],
+            [
+                "id" => "accountNumber",
+                "value" => $this->destination,
+                "label" => "Customer's phone number"
             ]
         ];
         $body = [
