@@ -155,6 +155,7 @@ class Utility extends Core
 
         $request = TandaRequest::whereRequestId($response['id'])->first();
 
+//        TODO: Create update function separately to avoid redundancies with controller
         if ($request && $request->status !== $response['status']) {
             $request->update([
                 'status' => $response['status'],

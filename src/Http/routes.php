@@ -13,7 +13,6 @@ Route::prefix('/tanda')->namespace(Controller::class)->name('tanda.')->group(fun
     });
 
     Route::prefix('/callbacks')->name('callback.')->group(function () {
-        Route::post('/register', [Controller::class, 'registerCallbackURL'])->name('register');
         Route::post('/notification', [Controller::class, 'instantPaymentNotification'])->name('notification');
     });
 });
