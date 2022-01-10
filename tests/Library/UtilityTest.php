@@ -63,7 +63,7 @@ class UtilityTest extends MockServerTestCase
             new Response(200, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['request_pending'])));
 
-        $res = (new Utility($this->_client))->billPayment(765432100, 100, Providers::KPLC_POSTPAID, 765432100, null, false);
+        $res = (new Utility($this->_client))->billPayment(765432100, 100, Providers::KPLC_POSTPAID, null, false);
 
         $this->assertIsArray($res);
         $this->assertEquals('000001', $res['status']);
@@ -80,7 +80,7 @@ class UtilityTest extends MockServerTestCase
                 json_encode($this->mockResponses['request_failed'])));
 
 //        TODO: Make tests cover all providers and commands
-        $res = (new Utility($this->_client))->billPayment(765432100, 10, Providers::DSTV, 765432100);
+        $res = (new Utility($this->_client))->billPayment(765432100, 10, Providers::DSTV);
 
         $this->assertInstanceOf(TandaRequest::class, $res);
         $this->assertEquals(000002, $res->status);
@@ -92,7 +92,7 @@ class UtilityTest extends MockServerTestCase
     {
         $this->expectException(TandaException::class);
 
-        (new Utility($this->_client))->billPayment(765432100, 10, Providers::SAFARICOM, 765432100);
+        (new Utility($this->_client))->billPayment(765432100, 10, Providers::SAFARICOM);
     }
 
     /** @test */
@@ -100,12 +100,12 @@ class UtilityTest extends MockServerTestCase
     {
         $this->expectException(TandaException::class);
 
-        (new Utility($this->_client))->billPayment(765432100, 10, Providers::KPLC_POSTPAID, 765432100, null, false);
+        (new Utility($this->_client))->billPayment(765432100, 10, Providers::KPLC_POSTPAID, null, false);
     }
 
 
     /** @test */
-    function request_status()
+    function request_status_is_successful()
     {
         $this->mock->append(
             new Response(200, ['Content_type' => 'application/json'],
