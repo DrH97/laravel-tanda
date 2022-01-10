@@ -2,6 +2,7 @@
 
 namespace DrH\Tanda\Library;
 
+use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -55,7 +56,7 @@ class Utility extends Core
             'serviceProviderId' => $this->provider,
             'requestParameters' => $requestParameters
         ];
-        
+
         $response = $this->request(Endpoints::REQUEST, $body);
 
         if ($save) {
@@ -70,7 +71,6 @@ class Utility extends Core
      * @param int $accountNo
      * @param int $amount
      * @param string $provider
-     * @param int $phone
      * @param int|null $relationId
      * @param bool $save
      * @return array|TandaRequest
@@ -81,10 +81,11 @@ class Utility extends Core
         int $accountNo,
         int $amount,
         string $provider,
-        int $phone,
         int $relationId = null,
         bool $save = true
     ): array | TandaRequest {
+        $provider = strtoupper($provider);
+
         $allowedProviders = [
             Providers::KPLC_PREPAID,
             Providers::KPLC_POSTPAID,
@@ -97,15 +98,19 @@ class Utility extends Core
 
         $this->validate($provider, $amount);
 
-        if (!in_array(strtoupper($provider), $allowedProviders)) {
+        if (!in_array($provider, $allowedProviders)) {
             throw new TandaException("Provider does not seem to be valid or supported");
         }
 
         $this->provider = $provider;
         $this->amount = $amount;
-        $this->destination = $phone;
+        $this->destination = $accountNo;
 
         $this->setCommand($this->provider);
+
+        if (in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
+            $this->provider = 'KPLC';
+        }
 
 //        TODO: Check whether customerContact is necessary or what it is used for.
 //              $phone = $this->formatPhoneNumber($phone);
@@ -146,7 +151,23 @@ class Utility extends Core
      */
     public function requestStatus(string $reference): array
     {
-        return $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
+        $response = $this->request(Endpoints::STATUS, [], [':requestId' => $reference]);
+
+        $request = TandaRequest::whereRequestId($response['id'])->first();
+
+        if ($request && $request->status !== $response['status']) {
+            $request->update([
+                'status' => $response['status'],
+                'message' => $response['message'],
+                'receipt_number' => $response['receiptNumber'],
+                'result' => $response['resultParameters'],
+                'last_modified' => Carbon::parse($response['datetimeLastModified'])->utc(),
+            ]);
+
+            $this->fireTandaEvent($request);
+        }
+
+        return $response;
     }
 
     private function setCommand(string $provider)

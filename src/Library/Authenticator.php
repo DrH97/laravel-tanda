@@ -10,24 +10,17 @@ use Psr\Http\Message\ResponseInterface;
 
 class Authenticator
 {
-    protected string $endpoint;
-
-    protected BaseClient $client;
-
-    protected static Authenticator $instance;
+    private string $endpoint;
 
     private ?string $credentials = null;
 
     /**
      * Authenticator constructor.
      *
-     * @param BaseClient $baseClient
+     * @param BaseClient $client
      */
-    public function __construct(BaseClient $baseClient)
+    public function __construct(private BaseClient $client)
     {
-        $this->client = $baseClient;
-        $this->endpoint = Endpoints::build(Endpoints::AUTH);
-        self::$instance = $this;
     }
 
 
@@ -88,6 +81,8 @@ class Authenticator
     {
         $clientId = config('tanda.client_id', false);
         $clientSecret = config('tanda.client_secret', false);
+
+        $this->endpoint = Endpoints::build(Endpoints::AUTH);
 
         return $this->client->clientInterface->request(
             'POST',
