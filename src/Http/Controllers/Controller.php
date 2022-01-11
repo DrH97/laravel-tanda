@@ -86,7 +86,7 @@ class Controller extends BaseController
             $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
                 'status' => $request->input('status'),
                 'message' => $request->input('message'),
-                'receiptNumber' => $request->input('receiptNumber'),
+                'receipt_number' => $request->input('receiptNumber'),
                 'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
                 'result' => $request->input('resultParameters'),
             ]);
