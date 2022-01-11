@@ -109,7 +109,9 @@ class Utility extends Core
         $this->setCommand($this->provider);
 
         if (in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
-            $this->provider = 'KPLC';
+            $provider = 'KPLC';
+        } else {
+            $provider = $this->provider;
         }
 
 //        TODO: Check whether customerContact is necessary or what it is used for.
@@ -129,7 +131,7 @@ class Utility extends Core
 
         $body = [
             'commandId' => $this->command,
-            'serviceProviderId' => $this->provider,
+            'serviceProviderId' => $provider,
             'requestParameters' => $requestParameters
         ];
 
