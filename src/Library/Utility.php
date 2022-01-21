@@ -194,7 +194,7 @@ class Utility extends Core
                 'request_id' => $response['id'],
                 'status' => $response['status'],
                 'message' => $response['message'],
-                'command_id' => $response['commandId'],
+                'command_id' => $this->command,
                 'provider' => $this->provider,
 
 //                TODO: Would it be better to decode the requestParameters and get below values??
