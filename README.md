@@ -25,7 +25,7 @@ The package will automatically register itself.
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="DrH\Tanda\TandaServiceProvider" --tag="tanda-config"
+php artisan tanda:install
 ```
 
 ### Getting Started
