@@ -12,93 +12,93 @@ use Psr\Http\Message\ResponseInterface;
 
 class Core
 {
-    private BaseClient $baseClient;
+private BaseClient $baseClient;
 
     /**
      *
      * @param BaseClient $baseClient
      */
-    public function __construct(BaseClient $baseClient)
-    {
-        $this->baseClient = $baseClient;
-    }
+public function __construct(BaseClient $baseClient)
+{
+    $this->baseClient = $baseClient;
+}
 
 
     /**
      * @throws TandaException|GuzzleException
      */
-    public function request(string $endpointSuffix, array $body, array $replace = [], array $params = null): array
-    {
-        $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
-        $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
+public function request(string $endpointSuffix, array $body, array $replace = [], array $params = null): array
+{
+    $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
+    $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
-        $response = $this->sendRequest($method, $endpoint, $body);
+    $response = $this->sendRequest($method, $endpoint, $body);
 
-        $_body = json_decode($response->getBody());
+    $_body = json_decode($response->getBody());
 
-        if (!str_starts_with($response->getStatusCode(), "2")) {
-            throw new TandaException($_body->message ?
-                $_body->status . ' - ' . $_body->message : $response->getBody());
-        }
-        return (array)$_body;
+    if (!str_starts_with($response->getStatusCode(), "2")) {
+        throw new TandaException($_body->message ?
+            $_body->status . ' - ' . $_body->message : $response->getBody());
     }
+    return (array)$_body;
+}
 
     /**
      * @throws GuzzleException|TandaException
      */
-    public function sendRequest(string $method, string $url, array $body): ResponseInterface
-    {
-        $bearer = $this->baseClient->authenticator->authenticate();
-        $options = [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $bearer,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => $this->getBody($body),
-        ];
+public function sendRequest(string $method, string $url, array $body): ResponseInterface
+{
+    $bearer = $this->baseClient->authenticator->authenticate();
+    $options = [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $bearer,
+            'Content-Type' => 'application/json',
+        ],
+        'json' => $this->getBody($body),
+    ];
 
-        return $this->baseClient->clientInterface->request(
-            $method,
-            $url,
-            $options
-        );
-    }
+    return $this->baseClient->clientInterface->request(
+        $method,
+        $url,
+        $options
+    );
+}
 
-    public function getBody(array $body): array
-    {
-        //        Added these to reduce redundancy in child classes
-        $body += [
-            'referenceParameters' => $this->getReferenceParameters()
-        ];
+public function getBody(array $body): array
+{
+    //        Added these to reduce redundancy in child classes
+    $body += [
+        'referenceParameters' => $this->getReferenceParameters()
+    ];
 
-        return $body;
-    }
+    return $body;
+}
 
     /**
      * @throws TandaException
      */
-    public function getTelcoFromPhone(int $phone): string
-    {
-        $safReg = '/^(?:254|\+254|0)?((?:7(?:[0129][0-9]|4[0123568]|5[789]|6[89])|(1([1][0-5])))[0-9]{6})$/';
-        $airReg = '/^(?:254|\+254|0)?((?:(7(?:(3[0-9])|(5[0-6])|(6[27])|(8[0-9])))|(1([0][0-6])))[0-9]{6})$/';
-        $telReg = '/^(?:254|\+254|0)?(7(7[0-9])[0-9]{6})$/';
-        //        $equReg = '/^(?:254|\+254|0)?(7(6[3-6])[0-9]{6})$/';
-        $faibaReg = '/^(?:254|\+254|0)?(747[0-9]{6})$/';
+public function getTelcoFromPhone(int $phone): string
+{
+    $safReg = '/^(?:254|\+254|0)?((?:7(?:[0129][0-9]|4[0123568]|5[789]|6[89])|(1([1][0-5])))[0-9]{6})$/';
+    $airReg = '/^(?:254|\+254|0)?((?:(7(?:(3[0-9])|(5[0-6])|(6[27])|(8[0-9])))|(1([0][0-6])))[0-9]{6})$/';
+    $telReg = '/^(?:254|\+254|0)?(7(7[0-9])[0-9]{6})$/';
+    //        $equReg = '/^(?:254|\+254|0)?(7(6[3-6])[0-9]{6})$/';
+    $faibaReg = '/^(?:254|\+254|0)?(747[0-9]{6})$/';
 
-        $result = match (1) {
-            preg_match($safReg, $phone) => Providers::SAFARICOM,
-            preg_match($airReg, $phone) => Providers::AIRTEL,
-            preg_match($telReg, $phone) => Providers::TELKOM,
-            preg_match($faibaReg, $phone) => Providers::FAIBA,
-            default => null,
-        };
+    $result = match (1) {
+        preg_match($safReg, $phone) => Providers::SAFARICOM,
+        preg_match($airReg, $phone) => Providers::AIRTEL,
+        preg_match($telReg, $phone) => Providers::TELKOM,
+        preg_match($faibaReg, $phone) => Providers::FAIBA,
+    default => null,
+    };
 
         if (!$result) {
             throw new TandaException("Phone does not seem to be valid or supported");
         }
 
         return $result;
-    }
+        }
 
     /**
      * @throws TandaException
@@ -122,31 +122,31 @@ class Core
             }
         };
 
-        $replace('7', '2547');
-        $replace('1', '2541');
+    $replace('7', '2547');
+    $replace('1', '2541');
 
-        if ($strip_plus) {
-            $replace('+254', '254');
-        }
+    if ($strip_plus) {
+        $replace('+254', '254');
+    }
 
-        if (!Str::startsWith($number, "254")) {
-            //  Means the number started with correct digits but after replacing,
-            //  found invalid digit e.g. 254256000000
-            //  254 isn't found and so 254 does not replace it, which means false number
-            throw new TandaException("Number does not seem to be a valid phone");
-        }
+    if (!Str::startsWith($number, "254")) {
+        //  Means the number started with correct digits but after replacing,
+        //  found invalid digit e.g. 254256000000
+        //  254 isn't found and so 254 does not replace it, which means false number
+        throw new TandaException("Number does not seem to be a valid phone");
+    }
 
-        return $number;
+    return $number;
     }
 
     private function getReferenceParameters(): array
     {
         return [
-            [
-                "id" => "resultUrl",
-                "value" => config('tanda.urls.callback'),
-                "label" => "Callback URL"
-            ]
+        [
+            "id" => "resultUrl",
+            "value" => config('tanda.urls.callback'),
+            "label" => "Callback URL"
+        ]
         ];
     }
 

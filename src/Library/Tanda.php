@@ -26,7 +26,7 @@ class Tanda
         $tandaRequests = TandaRequest::whereStatus(000001)->get();
         $success = $errors = [];
 
-        foreach($tandaRequests as $request) {
+        foreach ($tandaRequests as $request) {
             try {
                 $result = $this->utility->requestStatus($request->request_id);
 
@@ -41,7 +41,8 @@ class Tanda
                 ];
 
                 $transaction = TandaRequest::updateOrCreate(
-                    ['request_id' => $result['id']], $data
+                    ['request_id' => $result['id']],
+                    $data
                 );
 
                 $this->fireTandaEvent($transaction);
@@ -57,9 +58,11 @@ class Tanda
      * @param TandaRequest $request
      * @return void
      */
-    static function fireTandaEvent(TandaRequest $request): void
+    public static function fireTandaEvent(TandaRequest $request): void
     {
-        if ($request->status == 000001) return;
+        if ($request->status == 000001) {
+            return;
+        }
 
         in_array($request->status, [000000, 000002])
             ? TandaRequestSuccessEvent::dispatch($request)
