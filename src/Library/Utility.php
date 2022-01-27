@@ -71,7 +71,6 @@ class Utility extends Core
      * @param int $accountNo
      * @param int $amount
      * @param string $provider
-     * @param int $phone
      * @param int|null $relationId
      * @param bool $save
      * @return array|TandaRequest
@@ -109,8 +108,10 @@ class Utility extends Core
 
         $this->setCommand($this->provider);
 
-        if(in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
-            $this->provider = 'KPLC';
+        if (in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
+            $provider = 'KPLC';
+        } else {
+            $provider = $this->provider;
         }
 
 //        TODO: Check whether customerContact is necessary or what it is used for.
@@ -130,7 +131,7 @@ class Utility extends Core
 
         $body = [
             'commandId' => $this->command,
-            'serviceProviderId' => $this->provider,
+            'serviceProviderId' => $provider,
             'requestParameters' => $requestParameters
         ];
 
@@ -156,7 +157,8 @@ class Utility extends Core
 
         $request = TandaRequest::whereRequestId($response['id'])->first();
 
-        if($request && $request->status !== $response['status']) {
+//        TODO: Create update function separately to avoid redundancies with controller
+        if ($request && $request->status !== $response['status']) {
             $request->update([
                 'status' => $response['status'],
                 'message' => $response['message'],
@@ -192,14 +194,17 @@ class Utility extends Core
                 'request_id' => $response['id'],
                 'status' => $response['status'],
                 'message' => $response['message'],
-                'command_id' => $response['commandId'],
+                'command_id' => $this->command,
                 'provider' => $this->provider,
 
 //                TODO: Would it be better to decode the requestParameters and get below values??
                 'destination' => $this->destination,
                 'amount' => $this->amount,
+
                 'result' => $response['resultParameters'],
+
                 'last_modified' => $response['datetimeLastModified'],
+
                 'relation_id' => $relationId
             ]);
 

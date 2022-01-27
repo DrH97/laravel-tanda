@@ -66,7 +66,7 @@ class Core
 
     public function getBody(array $body): array
     {
-//        Added these to reduce redundancy in child classes
+        //        Added these to reduce redundancy in child classes
         $body += [
             'referenceParameters' => $this->getReferenceParameters()
         ];
@@ -82,7 +82,7 @@ class Core
         $safReg = '/^(?:254|\+254|0)?((?:7(?:[0129][0-9]|4[0123568]|5[789]|6[89])|(1([1][0-5])))[0-9]{6})$/';
         $airReg = '/^(?:254|\+254|0)?((?:(7(?:(3[0-9])|(5[0-6])|(6[27])|(8[0-9])))|(1([0][0-6])))[0-9]{6})$/';
         $telReg = '/^(?:254|\+254|0)?(7(7[0-9])[0-9]{6})$/';
-        $equReg = '/^(?:254|\+254|0)?(7(6[3-6])[0-9]{6})$/';
+        //        $equReg = '/^(?:254|\+254|0)?(7(6[3-6])[0-9]{6})$/';
         $faibaReg = '/^(?:254|\+254|0)?(747[0-9]{6})$/';
 
         $result = match (1) {
@@ -156,7 +156,9 @@ class Core
      */
     protected function fireTandaEvent(TandaRequest $request): void
     {
-        if ($request->status == 000001) return;
+        if ($request->status == 000001) {
+            return;
+        }
 
         if ($request->status == 000000) {
             event(new TandaRequestSuccessEvent($request));

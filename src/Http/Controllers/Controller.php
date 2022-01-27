@@ -6,8 +6,8 @@ use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
-use DrH\Tanda\Library\Tanda;
 use DrH\Tanda\Models\TandaRequest;
+use DrH\Tanda\Repositories\Tanda;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -34,6 +34,20 @@ class Controller extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @return array
+     * @throws TandaException
+     */
+    public function requestStatus(Request $request): array
+    {
+        if (!$request->has('reference')) {
+            throw new TandaException("Transaction reference is missing.");
+        }
+
+        return Utility::requestStatus($request->input('reference'));
+    }
+
+    /**
      * -----------------------------------------------------------------------------------------------    UTILITY
      *
      * @throws TandaException
@@ -53,57 +67,6 @@ class Controller extends BaseController
         return Utility::airtimePurchase($request->input('phone'), $request->input('amount'));
     }
 
-    /**
-     * @throws TandaException
-     */
-    public function billPayment(Request $request): array|TandaRequest
-    {
-        $this->validateRequest([
-            'account_no' => 'required|integer',
-            'amount' => 'required|integer',
-            'provider' => 'required|string',
-        ], $request, [
-            'account_no.integer' => 'Invalid account number. Must not start with zero.',
-            'amount.integer' => 'Invalid amount. Must not start with zero.',
-            'provider.required' => 'Service provider(telco) is required.',
-        ]);
-
-        return Utility::billPayment(
-            $request->input('account_no'),
-            $request->input('amount'),
-            $request->input('provider'),
-        );
-    }
-
-    public function instantPaymentNotification(Request $request)
-    {
-        try {
-            $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
-                'status' => $request->input('status'),
-                'message' => $request->input('message'),
-                'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
-            ]);
-
-            Tanda::fireTandaEvent($tandaRequest);
-        } catch (QueryException $e) {
-            Log::info('Error updating instant payment notification. - ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * @param Request $request
-     * @return array
-     * @throws TandaException
-     */
-    public function requestStatus(Request $request): array
-    {
-        if (!$request->has('reference')) {
-            throw new TandaException("Transaction reference is missing.");
-        }
-
-        return Utility::requestStatus($request->input('reference'));
-    }
-
 
     /**
      * @throws TandaException
@@ -114,6 +77,23 @@ class Controller extends BaseController
 
         if ($validation->fails()) {
             throw new TandaException($validation->errors()->first());
+        }
+    }
+
+    public function instantPaymentNotification(Request $request)
+    {
+        try {
+            $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
+                'status' => $request->input('status'),
+                'message' => $request->input('message'),
+                'receipt_number' => $request->input('receiptNumber'),
+                'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
+                'result' => $request->input('resultParameters'),
+            ]);
+
+            Tanda::fireTandaEvent($tandaRequest);
+        } catch (QueryException $e) {
+            Log::error('Error updating instant payment notification. - ' . $e->getMessage());
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DrH\Tanda\Console;
 
-use DrH\Tanda\Library\Tanda;
+use DrH\Tanda\Repositories\Tanda;
 use Illuminate\Console\Command;
 
 class RequestStatusCommand extends Command

@@ -2,6 +2,8 @@
 
 namespace DrH\Tanda;
 
+use DrH\Tanda\Console\InstallCommand;
+use DrH\Tanda\Console\RequestStatusCommand;
 use DrH\Tanda\Library\BaseClient;
 use DrH\Tanda\Library\Utility;
 use GuzzleHttp\Client;
@@ -91,8 +93,8 @@ class TandaServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Console\InstallCommand::class,
-                Console\RequestStatusCommand::class
+                InstallCommand::class,
+                RequestStatusCommand::class
             ]);
         }
     }

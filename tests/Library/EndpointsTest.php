@@ -19,16 +19,6 @@ class EndpointsTest extends TestCase
     }
 
     /** @test */
-    function throw_error_on_invalid_endpoint()
-    {
-        Config::set('tanda.organization_id', 'org');
-
-        $this->expectException(TandaException::class);
-
-        Endpoints::build("test_invalid");
-    }
-
-    /** @test */
     function replaces_organization_id_correctly()
     {
         Config::set('tanda.organization_id', 'org');
@@ -37,16 +27,6 @@ class EndpointsTest extends TestCase
         $actualUrl = Config::get('tanda.urls.base') . '/io/v1/organizations/org/requests';
 
         $this->assertSame($actualUrl, $testUrl);
-    }
-
-    /** @test */
-    function throw_error_on_unset_organization_id()
-    {
-        Config::set('tanda.organization_id');
-
-        $this->expectException(TandaException::class);
-
-        Endpoints::build(Endpoints::REQUEST);
     }
 
     /** @test */
@@ -59,6 +39,26 @@ class EndpointsTest extends TestCase
         $actualUrl = Config::get('tanda.urls.base') . '/sandbox/io/v1/organizations/org/requests';
 
         $this->assertSame($actualUrl, $testUrl);
+    }
+
+    /** @test */
+    function throws_on_invalid_endpoint()
+    {
+        Config::set('tanda.organization_id', 'org');
+
+        $this->expectException(TandaException::class);
+
+        Endpoints::build("test_invalid");
+    }
+
+    /** @test */
+    function throws_on_unset_organization_id()
+    {
+        Config::set('tanda.organization_id');
+
+        $this->expectException(TandaException::class);
+
+        Endpoints::build(Endpoints::REQUEST);
     }
 
 }
