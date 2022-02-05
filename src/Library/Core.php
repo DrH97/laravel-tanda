@@ -7,6 +7,7 @@ use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
@@ -37,6 +38,7 @@ class Core
         $_body = json_decode($response->getBody());
 
         if (!str_starts_with($response->getStatusCode(), "2")) {
+            Log::error((array)$_body ?? $response->getBody());
             throw new TandaException($_body->message ?
                 $_body->status . ' - ' . $_body->message : $response->getBody());
         }
