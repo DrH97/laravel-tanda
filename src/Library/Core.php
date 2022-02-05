@@ -38,7 +38,7 @@ class Core
         $_body = json_decode($response->getBody());
 
         if (!str_starts_with($response->getStatusCode(), "2")) {
-            Log::error($_body ?? $response->getBody());
+            Log::error((array)$_body ?? $response->getBody());
             throw new TandaException($_body->message ?
                 $_body->status . ' - ' . $_body->message : $response->getBody());
         }
