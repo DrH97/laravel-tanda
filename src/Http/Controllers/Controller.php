@@ -84,6 +84,7 @@ class Controller extends BaseController
     {
         try {
             $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
+                'provider' => $request->input('provider', ""),
                 'status' => $request->input('status'),
                 'message' => $request->input('message'),
                 'receipt_number' => $request->input('receiptNumber'),

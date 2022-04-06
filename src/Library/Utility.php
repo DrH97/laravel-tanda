@@ -116,10 +116,12 @@ class Utility extends Core
 
 //        TODO: Check whether customerContact is necessary or what it is used for.
 //              $phone = $this->formatPhoneNumber($phone);
+//        NOTE: KPLC accounts are supposedly 11 digits. pad with zeroes on the left
+//        TODO: Should we change accountNo to string? int may be removing initial zeroes
         $requestParameters = [
             [
                 "id" => "accountNumber",
-                "value" => $accountNo,
+                "value" => sprintf('%011d', $accountNo),
                 "label" => "A/c"
             ],
             [
