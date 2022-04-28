@@ -108,6 +108,10 @@ class Utility extends Core
 
         $this->setCommand($this->provider);
 
+        if ($provider == Providers::KPLC_PREPAID) {
+            $accountNo = sprintf('%011d', $accountNo);
+        }
+
         if (in_array($provider, [Providers::KPLC_PREPAID, Providers::KPLC_POSTPAID])) {
             $provider = 'KPLC';
         } else {

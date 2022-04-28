@@ -83,14 +83,26 @@ class Controller extends BaseController
     public function instantPaymentNotification(Request $request)
     {
         try {
-            $tandaRequest = TandaRequest::updateOrCreate(['request_id' => $request->input('transactionId')], [
-                'provider' => $request->input('provider', ""),
-                'status' => $request->input('status'),
-                'message' => $request->input('message'),
-                'receipt_number' => $request->input('receiptNumber'),
-                'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
-                'result' => $request->input('resultParameters'),
-            ]);
+            $tandaRequest = TandaRequest::whereRequestId($request->input('transactionId'))->first();
+            if (isset($tandaRequest)) {
+                $tandaRequest->update([
+                    'status' => $request->input('status'),
+                    'message' => $request->input('message'),
+                    'receipt_number' => $request->input('receiptNumber'),
+                    'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
+                    'result' => $request->input('resultParameters'),
+                ]);
+            } else {
+                $tandaRequest = TandaRequest::create([
+                    'request_id' => $request->input('transactionId'),
+                    'provider' => $request->input('provider', ""),
+                    'status' => $request->input('status'),
+                    'message' => $request->input('message'),
+                    'receipt_number' => $request->input('receiptNumber'),
+                    'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
+                    'result' => $request->input('resultParameters'),
+                ]);
+            }
 
             Tanda::fireTandaEvent($tandaRequest);
         } catch (QueryException $e) {
