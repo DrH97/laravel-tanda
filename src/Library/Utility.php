@@ -125,7 +125,7 @@ class Utility extends Core
         $requestParameters = [
             [
                 "id" => "accountNumber",
-                "value" => sprintf('%011d', $accountNo),
+                "value" => $accountNo,
                 "label" => "A/c"
             ],
             [
