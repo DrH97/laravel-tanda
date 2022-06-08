@@ -22,7 +22,7 @@ class CreateTandaRequestsTable extends Migration
                 $table->string('status');
                 $table->string('message');
                 $table->string('receipt_number')->nullable();
-                $table->string('command_id');
+                $table->string('command_id')->nullable();
                 $table->string('provider');
                 $table->string('destination');
                 $table->integer('amount');
