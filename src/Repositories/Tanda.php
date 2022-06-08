@@ -3,8 +3,6 @@
 namespace DrH\Tanda\Repositories;
 
 use Carbon\Carbon;
-use DrH\Tanda\Events\TandaRequestFailedEvent;
-use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Library\BaseClient;
 use DrH\Tanda\Library\Utility;
@@ -47,27 +45,12 @@ class Tanda
                     $data
                 );
 
-                $this->fireTandaEvent($transaction);
+                $this->utility->fireTandaEvent($transaction);
             } catch (TandaException | GuzzleException $e) {
                 $errors[$request->request_id] = $e->getMessage();
             }
         }
 
         return ['successful' => $success, 'errors' => $errors];
-    }
-
-    /**
-     * @param TandaRequest $request
-     * @return void
-     */
-    public static function fireTandaEvent(TandaRequest $request): void
-    {
-        if ($request->status == 000001) {
-            return;
-        }
-
-        $request->status == 000000
-            ? TandaRequestSuccessEvent::dispatch($request)
-            : TandaRequestFailedEvent::dispatch($request);
     }
 }

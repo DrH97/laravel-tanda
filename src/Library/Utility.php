@@ -214,7 +214,6 @@ class Utility extends Core
                 'relation_id' => $relationId
             ]);
 
-//            TODO: Is it necessary? X Doubt
             $this->fireTandaEvent($request);
 
             return $request;
