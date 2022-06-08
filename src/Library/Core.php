@@ -2,6 +2,7 @@
 
 namespace DrH\Tanda\Library;
 
+use DrH\Tanda\Events\TandaRequestEvent;
 use DrH\Tanda\Events\TandaRequestFailedEvent;
 use DrH\Tanda\Events\TandaRequestSuccessEvent;
 use DrH\Tanda\Exceptions\TandaException;
@@ -156,16 +157,15 @@ class Core
      * @param TandaRequest $request
      * @return void
      */
-    protected function fireTandaEvent(TandaRequest $request): void
+    public function fireTandaEvent(TandaRequest $request): void
     {
         if ($request->status == 000001) {
+            event(new TandaRequestEvent($request));
             return;
         }
 
-        if ($request->status == 000000) {
-            event(new TandaRequestSuccessEvent($request));
-        } else {
-            event(new TandaRequestFailedEvent($request));
-        }
+        $request->status == 000000
+            ? TandaRequestSuccessEvent::dispatch($request)
+            : TandaRequestFailedEvent::dispatch($request);
     }
 }

@@ -96,6 +96,7 @@ class Controller extends BaseController
                 $tandaRequest = TandaRequest::create([
                     'request_id' => $request->input('transactionId'),
                     'provider' => $request->input('provider', ""),
+                    'destination' => $request->input('destination', ""),
                     'status' => $request->input('status'),
                     'message' => $request->input('message'),
                     'receipt_number' => $request->input('receiptNumber'),
