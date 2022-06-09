@@ -45,7 +45,7 @@ class Tanda
                     $data
                 );
 
-                $this->utility->fireTandaEvent($transaction);
+                $this->fireTandaEvent($transaction);
             } catch (TandaException | GuzzleException $e) {
                 $errors[$request->request_id] = $e->getMessage();
             }

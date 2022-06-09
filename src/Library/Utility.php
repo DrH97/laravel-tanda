@@ -173,7 +173,7 @@ class Utility extends Core
                 'last_modified' => Carbon::parse($response['datetimeLastModified'])->utc(),
             ]);
 
-            $this->fireTandaEvent($request);
+            EventHelper::fireTandaEvent($request);
         }
 
         return $response;
@@ -214,7 +214,7 @@ class Utility extends Core
                 'relation_id' => $relationId
             ]);
 
-            $this->fireTandaEvent($request);
+            EventHelper::fireTandaEvent($request);
 
             return $request;
         } catch (\Exception $e) {

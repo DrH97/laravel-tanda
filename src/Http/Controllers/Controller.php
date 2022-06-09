@@ -6,8 +6,8 @@ use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Facades\Account;
 use DrH\Tanda\Facades\Utility;
+use DrH\Tanda\Library\EventHelper;
 use DrH\Tanda\Models\TandaRequest;
-use DrH\Tanda\Repositories\Tanda;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -105,7 +105,7 @@ class Controller extends BaseController
                 ]);
             }
 
-            Tanda::fireTandaEvent($tandaRequest);
+            EventHelper::fireTandaEvent($tandaRequest);
         } catch (QueryException $e) {
             Log::error('Error updating instant payment notification. - ' . $e->getMessage());
         }
