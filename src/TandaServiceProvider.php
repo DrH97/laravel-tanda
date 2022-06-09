@@ -21,7 +21,7 @@ class TandaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/tanda.php', 'tanda');
 
 //        TODO: Change this to bind for a stateless sort of lib
-        $this->app->singleton(BaseClient::class, function ($app) {
+        $this->app->singleton(BaseClient::class, function () {
             return new BaseClient(new Client(['http_errors' => false]));
         });
     }
@@ -52,26 +52,12 @@ class TandaServiceProvider extends ServiceProvider
     private function registerFacades()
     {
 //        IMPORTANT: Facades are with FQDN. Concrete/Implementations are imported, else there could be an error
-//        $this->app->singleton(
-//            Facades\Account::class,
-//            function ($app) {
-//                return $this->app->make(Account::class);
-//            }
-//        );
-
         $this->app->singleton(
             Facades\Utility::class,
             function ($app) {
                 return $this->app->make(Utility::class);
             }
         );
-//
-//        $this->app->singleton(
-//            Facades\Notification::class,
-//            function ($app) {
-//                return $this->app->make(Notification::class);
-//            }
-//        );
     }
 
     /**
