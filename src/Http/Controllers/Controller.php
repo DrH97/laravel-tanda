@@ -82,6 +82,8 @@ class Controller extends BaseController
 
     public function instantPaymentNotification(Request $request)
     {
+        tandaLogInfo("ipn: ", [$request]);
+
         try {
             $tandaRequest = TandaRequest::whereRequestId($request->input('transactionId'))->first();
             if (isset($tandaRequest)) {
