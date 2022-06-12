@@ -44,6 +44,8 @@ class TandaServiceProvider extends ServiceProvider
         $this->registerCommands();
 
         $this->registerFacades();
+
+        $this->requireHelperScripts();
     }
 
     /**
@@ -82,6 +84,14 @@ class TandaServiceProvider extends ServiceProvider
                 InstallCommand::class,
                 RequestStatusCommand::class
             ]);
+        }
+    }
+
+    private function requireHelperScripts()
+    {
+        $files = glob(__DIR__ . '/../Support/*.php');
+        foreach ($files as $file) {
+            include_once $file;
         }
     }
 }

@@ -30,9 +30,12 @@ class Core
         $endpoint = Endpoints::build($endpointSuffix, $replace, $params);
         $method = Endpoints::ENDPOINT_REQUEST_TYPES[$endpointSuffix];
 
+        tandaLogInfo("request: ", [$method, $endpoint, $body]);
         $response = $this->sendRequest($method, $endpoint, $body);
+        tandaLogInfo("response: ", [$response]);
 
         $_body = json_decode($response->getBody());
+        tandaLogInfo("body: ", [$body]);
 
         if (!str_starts_with($response->getStatusCode(), "2")) {
             Log::error((array)$_body ?? $response->getBody());
