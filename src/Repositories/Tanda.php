@@ -5,6 +5,7 @@ namespace DrH\Tanda\Repositories;
 use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Library\BaseClient;
+use DrH\Tanda\Library\EventHelper;
 use DrH\Tanda\Library\Utility;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -45,7 +46,7 @@ class Tanda
                     $data
                 );
 
-                $this->fireTandaEvent($transaction);
+                EventHelper::fireTandaEvent($transaction);
             } catch (TandaException | GuzzleException $e) {
                 $errors[$request->request_id] = $e->getMessage();
             }
