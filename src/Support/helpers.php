@@ -49,7 +49,7 @@ if (!function_exists('shouldLog')) {
 }
 
 if (!function_exists('parseData')) {
-    function parseGuzzleResponse(ResponseInterface $response): array
+    function parseGuzzleResponse(ResponseInterface $response, bool $includeBody): array
     {
         $headers = [];
         $excludeHeaders = ['set-cookie'];
@@ -88,13 +88,21 @@ if (!function_exists('parseData')) {
             $body->seek($previousPosition);
         }
 
-        return [
-            'protocol' => $response->getProtocolVersion(),
-            'reason_phrase' => $response->getReasonPhrase(),
-            'status_code' => $response->getStatusCode(),
-            'headers' => $headers,
-            'size' => $response->getBody()->getSize(),
-            'body' => $content,
-        ];
+        return $includeBody ?
+            [
+                'protocol' => $response->getProtocolVersion(),
+                'reason_phrase' => $response->getReasonPhrase(),
+                'status_code' => $response->getStatusCode(),
+                'headers' => $headers,
+                'size' => $response->getBody()->getSize(),
+                'body' => $content,
+            ] :
+            [
+                'protocol' => $response->getProtocolVersion(),
+                'reason_phrase' => $response->getReasonPhrase(),
+                'status_code' => $response->getStatusCode(),
+                'headers' => $headers,
+                'size' => $response->getBody()->getSize(),
+            ];
     }
 }

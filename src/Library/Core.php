@@ -32,9 +32,10 @@ class Core
 
         tandaLogInfo("request: ", [$method, $endpoint, $body]);
         $response = $this->sendRequest($method, $endpoint, $body);
-        tandaLogInfo("response: ", parseGuzzleResponse($response));
+        tandaLogInfo("response: ", parseGuzzleResponse($response, false));
 
         $_body = json_decode($response->getBody());
+        tandaLogInfo("body: ", (array)$_body);
 
         if (!str_starts_with($response->getStatusCode(), "2")) {
             Log::error((array)$_body ?? $response->getBody());
