@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 if (!function_exists('getLogChannel')) {
     function getLogChannel(): LoggerInterface
     {
+        //TODO: Add config to determine where to log
         if (!shouldLog())
             $path = "/dev/null";
         else
