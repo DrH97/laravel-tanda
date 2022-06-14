@@ -2,10 +2,8 @@
 
 namespace DrH\Tanda\Repositories;
 
-use Carbon\Carbon;
 use DrH\Tanda\Exceptions\TandaException;
 use DrH\Tanda\Library\BaseClient;
-use DrH\Tanda\Library\EventHelper;
 use DrH\Tanda\Library\Utility;
 use DrH\Tanda\Models\TandaRequest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -33,20 +31,6 @@ class Tanda
 
                 $success[$request->request_id] = $result['message'];
 
-                $data = [
-                    'status' => $result['status'],
-                    'message' => $result['message'],
-                    'receipt_number' => $result['receiptNumber'],
-                    'result' => $result['resultParameters'],
-                    'last_modified' => Carbon::parse($result['datetimeLastModified'])->utc(),
-                ];
-
-                $transaction = TandaRequest::updateOrCreate(
-                    ['request_id' => $result['id']],
-                    $data
-                );
-
-                EventHelper::fireTandaEvent($transaction);
             } catch (TandaException | GuzzleException $e) {
                 $errors[$request->request_id] = $e->getMessage();
             }
