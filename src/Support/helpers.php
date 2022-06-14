@@ -21,21 +21,23 @@ if (!function_exists('getLogChannel')) {
 }
 
 if (!function_exists('tandaLog')) {
-    function tandaLog(string|array $level, string $message, array $context = []): void
+    function tandaLog(string $level, string $message, array $context = []): void
     {
+        $message = '[LIB - TANDA]: ' . $message;
         getLogChannel()->log($level, $message, $context);
     }
 }
 
 if (!function_exists('tandaLogError')) {
-    function tandaLogError(string|array $message, array $context = []): void
+    function tandaLogError(string $message, array $context = []): void
     {
+        $message = '[LIB - TANDA]: ' . $message;
         getLogChannel()->error($message, $context);
     }
 }
 
 if (!function_exists('tandaLogInfo')) {
-    function tandaLogInfo(string|array $message, array $context = []): void
+    function tandaLogInfo(string $message, array $context = []): void
     {
         getLogChannel()->info($message, $context);
     }
