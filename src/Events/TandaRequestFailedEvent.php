@@ -22,6 +22,8 @@ class TandaRequestFailedEvent
      */
     public function __construct(TandaRequest $request)
     {
+        tandaLogInfo("TandaRequestFailedEvent: ", [$request]);
+
         $this->request = $request;
     }
 }

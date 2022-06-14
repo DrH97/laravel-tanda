@@ -16,13 +16,9 @@ class EventHelper
     public static function fireTandaEvent(TandaRequest $request): void
     {
         if ($request->status == 000001) {
-            tandaLogInfo("fireTandaEvent", [$request]);
-
             event(new TandaRequestEvent($request));
             return;
         }
-
-        tandaLogInfo("fireTandaFinalEvent", [$request]);
 
         $request->status == 000000
             ? TandaRequestSuccessEvent::dispatch($request)
