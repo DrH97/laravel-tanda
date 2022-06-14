@@ -4,6 +4,7 @@ use DrH\Tanda\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/tanda')->namespace(Controller::class)->name('tanda.')->group(function () {
+    // TODO: Disable all these in prod since they are exposed
     Route::prefix('/billing')->group(function () {
         Route::get('balance', [Controller::class, 'accountBalance'])->name('account.balance');
         Route::post('transaction-status', [Controller::class, 'requestStatus'])->name('transaction.status');

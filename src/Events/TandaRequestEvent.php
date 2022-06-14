@@ -20,6 +20,8 @@ class TandaRequestEvent
      */
     public function __construct(TandaRequest $request)
     {
+        tandaLogInfo("TandaRequestEvent: ", [$request]);
+
         $this->request = $request;
     }
 }
