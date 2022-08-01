@@ -4,18 +4,31 @@ use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
-if (!function_exists('getLogChannel')) {
-    function getLogChannel(): LoggerInterface
+if (!function_exists('shouldLog')) {
+    function shouldLog(): bool
     {
-        //TODO: Add config to determine where to log
-        if (!shouldLog())
-            $path = "/dev/null";
-        else
-            $path = storage_path('logs/tanda.log');
+        return config('tanda.logging.enabled') == true;
+    }
+}
+
+if (!function_exists('getLogger')) {
+    function getLogger(): LoggerInterface
+    {
+        if (shouldLog()) {
+            $channels = [];
+            foreach (config('drh.mpesa.logging.channels') as $rawChannel) {
+                if (is_string($rawChannel)) {
+                    $channels[] = $rawChannel;
+                } elseif (is_array($rawChannel)) {
+                    $channels[] = Log::build($rawChannel);
+                }
+            }
+            return Log::stack($channels);
+        }
 
         return Log::build([
             'driver' => 'single',
-            'path' => $path,
+            'path' => '/dev/null',
         ]);
     }
 }
@@ -24,7 +37,7 @@ if (!function_exists('tandaLog')) {
     function tandaLog(string $level, string $message, array $context = []): void
     {
         $message = '[LIB - TANDA]: ' . $message;
-        getLogChannel()->log($level, $message, $context);
+        getLogger()->log($level, $message, $context);
     }
 }
 
@@ -32,23 +45,19 @@ if (!function_exists('tandaLogError')) {
     function tandaLogError(string $message, array $context = []): void
     {
         $message = '[LIB - TANDA]: ' . $message;
-        getLogChannel()->error($message, $context);
+        getLogger()->error($message, $context);
     }
 }
 
 if (!function_exists('tandaLogInfo')) {
     function tandaLogInfo(string $message, array $context = []): void
     {
-        getLogChannel()->info($message, $context);
+        $message = '[LIB - TANDA]: ' . $message;
+        getLogger()->info($message, $context);
     }
 }
 
-if (!function_exists('shouldLog')) {
-    function shouldLog(): bool
-    {
-        return config('tanda.enable_logging') == true;
-    }
-}
+
 
 if (!function_exists('parseData')) {
     function parseGuzzleResponse(ResponseInterface $response, bool $includeBody): array
