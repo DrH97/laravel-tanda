@@ -107,5 +107,10 @@ return [
    | Whether to log in the library
    |
    */
-    'enable_logging' => env('TANDA_ENABLE_LOGGING', false),
+    'logging' => [
+        'enabled' => env('TANDA_ENABLE_LOGGING', false),
+        'channels' => [
+            'single', 'stderr',
+        ]
+    ]
 ];
