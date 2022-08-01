@@ -16,7 +16,7 @@ if (!function_exists('getLogger')) {
     {
         if (shouldLog()) {
             $channels = [];
-            foreach (config('drh.mpesa.logging.channels') as $rawChannel) {
+            foreach (config('tanda.logging.channels') as $rawChannel) {
                 if (is_string($rawChannel)) {
                     $channels[] = $rawChannel;
                 } elseif (is_array($rawChannel)) {
