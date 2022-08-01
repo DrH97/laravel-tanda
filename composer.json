@@ -12,7 +12,7 @@
     ],
     "description": "Tanda API Library",
     "license": "MIT",
-    "minimum-stability": "beta",
+    "minimum-stability": "stable",
     "require": {
         "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0",

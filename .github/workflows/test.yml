@@ -21,7 +21,7 @@ jobs:
         operating-system: [ubuntu-latest]
         php-versions: [ '8.1', '8.0', ]
         laravel: [ '9', '8', '7', ]
-#        dependency-stability: [ 'prefer-stable' ]
+        dependency-stability: [ 'prefer-stable' ]
 
     name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
 
