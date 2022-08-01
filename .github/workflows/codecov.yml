@@ -17,7 +17,7 @@ jobs:
         operating-system: [ubuntu-latest]
         php-versions: [ '8.0', '8.1' ]
 
-    name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
+    name: P${{ matrix.php-versions }} - ${{ matrix.operating-system}}
 
     steps:
     - uses: actions/checkout@v2

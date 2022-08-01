@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+//TODO: Add tests for all these helpers
+//    e.g. if logging channels doesn't exist, we shouldn't throw error
 if (!function_exists('shouldLog')) {
     function shouldLog(): bool
     {
