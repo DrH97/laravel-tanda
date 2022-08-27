@@ -94,20 +94,9 @@ class Controller extends BaseController
                     'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
                     'result' => $request->input('resultParameters'),
                 ]);
-            } else {
-                $tandaRequest = TandaRequest::create([
-                    'request_id' => $request->input('transactionId'),
-                    'provider' => $request->input('provider', ""),
-                    'destination' => $request->input('destination', ""),
-                    'status' => $request->input('status'),
-                    'message' => $request->input('message'),
-                    'receipt_number' => $request->input('receiptNumber'),
-                    'last_modified' => Carbon::parse($request->input('timestamp'))->utc(),
-                    'result' => $request->input('resultParameters'),
-                ]);
-            }
 
-            EventHelper::fireTandaEvent($tandaRequest);
+                EventHelper::fireTandaEvent($tandaRequest);
+            }
         } catch (QueryException $e) {
             Log::error('Error updating instant payment notification. - ' . $e->getMessage());
         }
