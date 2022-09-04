@@ -3,6 +3,7 @@
 namespace DrH\Tanda\Tests\Library;
 
 use DrH\Tanda\Exceptions\TandaException;
+use DrH\Tanda\Library\Authenticator;
 use DrH\Tanda\Tests\MockServerTestCase;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Config;
@@ -16,7 +17,7 @@ class AuthenticatorTest extends MockServerTestCase
             new Response(200, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['auth_success'])));
 
-        $accessToken = (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        $accessToken = (new Authenticator($this->_client))->authenticate();
 
         $this->assertEquals("token", $accessToken);
     }
@@ -28,9 +29,9 @@ class AuthenticatorTest extends MockServerTestCase
             new Response(200, ['Content_type' => 'application/json'],
                 json_encode($this->mockResponses['auth_success'])));
 
-        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        (new Authenticator($this->_client))->authenticate();
 
-        $accessToken = (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        $accessToken = (new Authenticator($this->_client))->authenticate();
 
         $this->assertEquals("token", $accessToken);
     }
@@ -42,7 +43,7 @@ class AuthenticatorTest extends MockServerTestCase
 
         Config::set('tanda.client_id');
 
-        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        (new Authenticator($this->_client))->authenticate();
     }
 
     /** @test */
@@ -56,7 +57,7 @@ class AuthenticatorTest extends MockServerTestCase
 
         Config::set('tanda.client_secret', 'somethingWRONGgoeshere');
 
-        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        (new Authenticator($this->_client))->authenticate();
     }
 
     /** @test */
@@ -68,7 +69,7 @@ class AuthenticatorTest extends MockServerTestCase
 
         $this->expectException(TandaException::class);
 
-        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        (new Authenticator($this->_client))->authenticate();
     }
 
     /** @test */
@@ -80,6 +81,6 @@ class AuthenticatorTest extends MockServerTestCase
 
         $this->expectException(TandaException::class);
 
-        (new \DrH\Tanda\Library\Authenticator($this->_client))->authenticate();
+        (new Authenticator($this->_client))->authenticate();
     }
 }
