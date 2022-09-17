@@ -30,18 +30,6 @@ class EndpointsTest extends TestCase
     }
 
     /** @test */
-    function adds_sandbox_to_url_correctly()
-    {
-        Config::set('tanda.organization_id', 'org');
-        Config::set('tanda.sandbox', true);
-
-        $testUrl = Endpoints::build(Endpoints::REQUEST);
-        $actualUrl = Config::get('tanda.urls.base') . '/sandbox/io/v1/organizations/org/requests';
-
-        $this->assertSame($actualUrl, $testUrl);
-    }
-
-    /** @test */
     function throws_on_invalid_endpoint()
     {
         Config::set('tanda.organization_id', 'org');
@@ -61,4 +49,20 @@ class EndpointsTest extends TestCase
         Endpoints::build(Endpoints::REQUEST);
     }
 
+    /** @test */
+    function get_correct_url_when_base_url_not_set()
+    {
+        Config::set('tanda.base.url');
+        Config::set('tanda.organization_id', 'org');
+
+        $testUrl = Endpoints::build(Endpoints::REQUEST);
+
+        $this->assertStringContainsString("https://io-proxy-443.tanda.co.ke", $testUrl);
+
+        Config::set('tanda.sandbox', true);
+
+        $testUrl = Endpoints::build(Endpoints::REQUEST);
+
+        $this->assertStringContainsString("https://tandaio-api-uats.tanda.co.ke", $testUrl);
+    }
 }

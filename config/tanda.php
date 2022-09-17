@@ -7,7 +7,7 @@ return [
      | ------------------------------------------------------
      | Specify whether this is a test app or production app
      |
-     | Sandbox base url: https://io-proxy-443.tanda.co.ke/sandbox
+     | Sandbox base url: https://tandaio-api-uats.tanda.co.ke
      | Production base url: https://io-proxy-443.tanda.co.ke
      */
     'sandbox' => env('TANDA_SANDBOX', false),
