@@ -3,8 +3,11 @@
 [![GitHub TestCI Workflow](https://github.com/DrH97/laravel-tanda/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/DrH97/laravel-tanda/actions/workflows/test.yml)
 [![Github StyleCI Workflow](https://github.com/DrH97/laravel-tanda/actions/workflows/styleci.yml/badge.svg?branch=master)](https://github.com/DrH97/laravel-tanda/actions/workflows/styleci.yml)
 [![codecov](https://codecov.io/gh/DrH97/laravel-tanda/branch/master/graph/badge.svg?token=6b0d0ba1-c2c6-4077-8c3a-1f567eea88a0)](https://codecov.io/gh/DrH97/laravel-tanda)
-[![Total Downloads](https://poser.pugx.org/DrH97/laravel-tanda/downloads)](https://packagist.org/packages/drh/laravel-tanda)
-[![License](https://poser.pugx.org/DrH97/laravel-tanda/license)](https://github.com/DrH97/laravel-tanda/blob/master/LICENSE.md)
+
+[![Latest Stable Version](http://poser.pugx.org/drh/laravel-tanda/v)](https://packagist.org/packages/drh/laravel-tanda) 
+[![Total Downloads](http://poser.pugx.org/drh/laravel-tanda/downloads)](https://packagist.org/packages/drh/laravel-tanda) 
+[![License](http://poser.pugx.org/drh/laravel-tanda/license)](https://packagist.org/packages/drh/laravel-tanda) 
+[![PHP Version Require](http://poser.pugx.org/drh/laravel-tanda/require/php)](https://packagist.org/packages/drh/laravel-tanda)
 
 This is a <i>Laravel</i> package that interfaces with [Tanda](https://www.tanda.africa/) Payments Api.
 The API enables you to initiate mobile payments, disburse payments to mobile and bank, purchase airtime & bundles* and to pay for utility bills.
