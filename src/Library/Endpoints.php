@@ -21,7 +21,7 @@ class Endpoints
     /**
      * @throws TandaException
      */
-    private static function getEndpoint(string $section, array $replace = [], array | null $params = null): string
+    private static function getEndpoint(string $section, array $replace = [], array|null $params = null): string
     {
         if (!in_array($section, array_keys(self::ENDPOINT_REQUEST_TYPES))) {
             throw new TandaException("Endpoint is invalid or does not exist.");
@@ -34,8 +34,8 @@ class Endpoints
         }
 
         $replaceItems = [
-            ':organizationId' => $organizationId
-        ] + $replace;
+                ':organizationId' => $organizationId
+            ] + $replace;
 
         $section = str_replace(
             array_keys($replaceItems),
@@ -49,16 +49,17 @@ class Endpoints
      * @param string $suffix
      * @return string
      */
-    private static function getUrl(string $suffix, array | null $params = null): string
+    private static function getUrl(string $suffix, array|null $params = null): string
     {
+        $defaultProductionUrl = 'https://io-proxy-443.tanda.co.ke/';
+        $defaultSandboxUrl = 'https://tandaio-api-uats.tanda.co.ke/';
+
+        $defaultUrl = config('tanda.sandbox') ? $defaultSandboxUrl : $defaultProductionUrl;
+
         $baseEndpoint = rtrim(
-            config('tanda.base.url') ?? 'https://io-proxy-443.tanda.co.ke/',
+            config('tanda.base.url') ?? $defaultUrl,
             '/'
         );
-
-        if (config('tanda.sandbox')) {
-            $baseEndpoint .= '/sandbox';
-        }
 
         $url = $baseEndpoint . $suffix;
         if ($params) {
