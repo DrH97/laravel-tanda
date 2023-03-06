@@ -8,11 +8,8 @@ class TandaRequest extends Model
 {
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'last_modified'
-    ];
-
     protected $casts = [
-        'result' => 'array'
+        'result'        => 'array',
+        'last_modified' => 'datetime'
     ];
 }
