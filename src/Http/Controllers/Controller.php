@@ -71,7 +71,7 @@ class Controller extends BaseController
     /**
      * @throws TandaException
      */
-    public function validateRequest(array $rules, Request $request, $messages = [])
+    public function validateRequest(array $rules, Request $request, $messages = []): void
     {
         $validation = Validator::make($request->all(), $rules, $messages);
 
@@ -80,12 +80,17 @@ class Controller extends BaseController
         }
     }
 
-    public function instantPaymentNotification(Request $request)
+    public function instantPaymentNotification(Request $request): void
     {
         tandaLogInfo("ipn: ", [$request]);
 
         try {
-            $tandaRequest = TandaRequest::whereRequestId($request->input('transactionId'))->first();
+            $tandaRequest = TandaRequest::whereRequestId($request->input('transactionId'))->whereStatus(000001)->first();
+            if ($tandaRequest->status != 000001) {
+                Log::error('Request is not pending - ' . $tandaRequest->id);
+                return;
+            }
+
             if (isset($tandaRequest)) {
                 $tandaRequest->update([
                     'status' => $request->input('status'),
@@ -98,7 +103,7 @@ class Controller extends BaseController
                 EventHelper::fireTandaEvent($tandaRequest);
             }
         } catch (QueryException $e) {
-            Log::error('Error updating instant payment notification. - ' . $e->getMessage());
+            Log::error('Error updating instant payment notification - ' . $e->getMessage());
         }
     }
 }
