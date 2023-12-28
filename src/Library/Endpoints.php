@@ -57,7 +57,7 @@ class Endpoints
         $defaultUrl = config('tanda.sandbox') ? $defaultSandboxUrl : $defaultProductionUrl;
 
         $baseEndpoint = rtrim(
-            config('tanda.base.url') ?? $defaultUrl,
+            config('tanda.urls.base') ?? $defaultUrl,
             '/'
         );
 
